@@ -4,6 +4,7 @@ import { inferProcedureInput } from '@trpc/server';
 import Link from 'next/link';
 import { Fragment } from 'react';
 import type { AppRouter } from '~/server/routers/_app';
+import { Button } from '@mantine/core';
 
 const IndexPage: NextPageWithLayout = () => {
   const utils = trpc.useContext();
@@ -70,7 +71,7 @@ const IndexPage: NextPageWithLayout = () => {
             <article key={item.id}>
               <h3>{item.title}</h3>
               <Link href={`/post/${item.id}`}>
-                <a>View more</a>
+                <Button component="a">Read more</Button>
               </Link>
             </article>
           ))}

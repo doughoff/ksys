@@ -1,30 +1,25 @@
 import {
-  AppShell,
-  createStyles,
   Navbar,
   Tooltip,
   UnstyledButton,
+  createStyles,
+  Stack,
 } from '@mantine/core';
 import {
-  IconCalendarStats,
+  TablerIcon,
+  IconHome2,
+  IconGauge,
   IconDeviceDesktopAnalytics,
   IconFingerprint,
-  IconGauge,
-  IconHome2,
-  IconSettings,
+  IconCalendarStats,
   IconUser,
-  TablerIcon,
+  IconSettings,
+  IconLogout,
+  IconSwitchHorizontal,
 } from '@tabler/icons';
 import React from 'react';
-import { ReactNode } from 'react';
-import { NavbarMinimal } from './NavbarMinimal';
-
-type DefaultLayoutProps = { children: ReactNode };
 
 const useStyles = createStyles((theme) => ({
-  test: {
-    backgroundColor: theme.colors.gray?.[9],
-  },
   link: {
     width: 50,
     height: 50,
@@ -32,17 +27,17 @@ const useStyles = createStyles((theme) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    color:
-      theme.colorScheme === 'dark'
-        ? theme.colors.dark?.[0]
-        : theme.colors.gray?.[7],
+    // color:
+    //   theme.colorScheme === 'dark'
+    //     ? theme.colors.dark[0]
+    //     : theme.colors.gray[7],
 
-    '&:hover': {
-      backgroundColor:
-        theme.colorScheme === 'dark'
-          ? theme.colors.dark?.[5]
-          : theme.colors.gray?.[0],
-    },
+    // '&:hover': {
+    //   backgroundColor:
+    //     theme.colorScheme === 'dark'
+    //       ? theme.colors.dark[5]
+    //       : theme.colors.gray[0],
+    // },
   },
 
   active: {
@@ -88,8 +83,7 @@ const mockdata = [
   { icon: IconSettings, label: 'Settings' },
 ];
 
-export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
-  const { classes } = useStyles();
+export function NavbarMinimal() {
   const [active, setActive] = React.useState(2);
 
   const links = mockdata.map((link, index) => (
@@ -102,16 +96,18 @@ export const DefaultLayout = ({ children }: DefaultLayoutProps) => {
   ));
 
   return (
-    <AppShell
-      className={classes.test}
-      navbar={
-        <Navbar>
-          <Navbar.Section>{links}</Navbar.Section>
-        </Navbar>
-      }
-      padding={'md'}
-    >
-      {children}
-    </AppShell>
+    <Navbar height={750} width={{ base: 80 }} p="md">
+      <Navbar.Section grow mt={0}>
+        <Stack justify="center" spacing={0}>
+          {links}
+        </Stack>
+      </Navbar.Section>
+      <Navbar.Section>
+        <Stack justify="center" spacing={0}>
+          <NavbarLink icon={IconSwitchHorizontal} label="Change account" />
+          <NavbarLink icon={IconLogout} label="Logout" />
+        </Stack>
+      </Navbar.Section>
+    </Navbar>
   );
-};
+}
