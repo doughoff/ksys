@@ -22,6 +22,8 @@ const PostViewPage: NextPageWithLayout = () => {
   const { data } = postQuery;
   return (
     <>
+      <h1 className="text-3xl font-bold underline">Hello world!</h1>
+
       <h1>{data.title}</h1>
       <em>Created {data.createdAt.toLocaleDateString('en-us')}</em>
 
