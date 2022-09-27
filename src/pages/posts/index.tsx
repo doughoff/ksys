@@ -1,39 +1,15 @@
-import {
-  Button,
-  Center,
-  Group,
-  Modal,
-  Pagination,
-  Table,
-  Textarea,
-  TextInput,
-  Title,
-} from '@mantine/core';
-import { useForm, zodResolver } from '@mantine/form';
+import { Button, Center, Group, Pagination, Table, Title } from '@mantine/core';
+import { NextLink } from '@mantine/next';
+import { IconEye } from '@tabler/icons';
+import dayjs from 'dayjs';
+import Head from 'next/head';
 import React from 'react';
-import { z } from 'zod';
+import AddPostModal from '~/components/forms/AddPostModal';
 import { trpc } from '../../utils/trpc';
 import { NextPageWithLayout } from '../_app';
-import dayjs from 'dayjs';
-import { IconEye } from '@tabler/icons';
-import { NextLink } from '@mantine/next';
-
-const postSchema = z.object({
-  title: z.string().min(3).max(50),
-  text: z.string().min(8).max(1000),
-});
 
 const IndexPage: NextPageWithLayout = () => {
-  const utils = trpc.useContext();
   const [isOpen, setIsOpen] = React.useState(false);
-  const form = useForm({
-    validate: zodResolver(postSchema),
-    initialValues: {
-      title: '',
-      text: '',
-    },
-  });
-
   const [page, setPage] = React.useState(1);
   const [pageSize, setPageSize] = React.useState(5);
 
@@ -41,12 +17,6 @@ const IndexPage: NextPageWithLayout = () => {
     pagination: {
       page: page,
       pageSize: pageSize,
-    },
-  });
-
-  const addPost = trpc.post.add.useMutation({
-    async onSuccess() {
-      await utils.post.list.invalidate();
     },
   });
 
@@ -87,6 +57,9 @@ const IndexPage: NextPageWithLayout = () => {
 
   return (
     <>
+      <Head>
+        <title>Posts</title>
+      </Head>
       <Group position="apart">
         <Title order={2}>Posts</Title>
         <Button variant="filled" color={'blue'} onClick={() => setIsOpen(true)}>
@@ -102,58 +75,9 @@ const IndexPage: NextPageWithLayout = () => {
         />
       </Center>
       {/* test button */}
-      <Modal title="Add Post" opened={isOpen} onClose={() => setIsOpen(false)}>
-        <form
-          onSubmit={form.onSubmit((values) => {
-            addPost.mutate(values);
-            form.reset();
-            setIsOpen(false);
-          })}
-        >
-          <TextInput
-            label="Title"
-            placeholder="Post title"
-            {...form.getInputProps('title')}
-          />
-          <Textarea
-            mt={'md'}
-            label="Text"
-            placeholder="Post text"
-            {...form.getInputProps('text')}
-          />
-          <Group position="right" mt={'md'}>
-            <Button type="submit">Add</Button>
-          </Group>
-        </form>
-      </Modal>
+      <AddPostModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
     </>
   );
 };
 
 export default IndexPage;
-
-/**
- * If you want to statically render this page
- * - Export `appRouter` & `createContext` from [trpc].ts
- * - Make the `opts` object optional on `createContext()`
- *
- * @link https://trpc.io/docs/ssg
- */
-// export const getStaticProps = async (
-//   context: GetStaticPropsContext<{ filter: string }>,
-// ) => {
-//   const ssg = createProxySSGHelpers({
-//     router: appRouter,
-//     ctx: await createContext(),
-//   });
-//
-//   await ssg.post.all.fetch();
-//
-//   return {
-//     props: {
-//       trpcState: ssg.dehydrate(),
-//       filter: context.params?.filter ?? 'all',
-//     },
-//     revalidate: 1,
-//   };
-// };

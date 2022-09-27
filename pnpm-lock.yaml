@@ -8,6 +8,7 @@ specifiers:
   '@mantine/form': ^5.4.1
   '@mantine/hooks': ^5.4.1
   '@mantine/next': ^5.4.1
+  '@mantine/notifications': ^5.4.1
   '@prisma/client': ^4.3.1
   '@tabler/icons': ^1.100.0
   '@tanstack/react-query': ^4.3.8
@@ -47,6 +48,7 @@ dependencies:
   '@mantine/form': 5.4.1_react@18.2.0
   '@mantine/hooks': 5.4.1_react@18.2.0
   '@mantine/next': 5.4.1_6tawbrm53n4muonpugu7ldclma
+  '@mantine/notifications': 5.4.1_yjrp4o5lii4tl5f25x3krrfp6i
   '@prisma/client': 4.3.1_prisma@4.3.1
   '@tabler/icons': 1.100.0_biqbaboplfbrettd7655fr4n2y
   '@tanstack/react-query': 4.6.0_biqbaboplfbrettd7655fr4n2y
@@ -585,6 +587,22 @@ packages:
     transitivePeerDependencies:
       - '@emotion/react'
       - '@emotion/server'
+    dev: false
+
+  /@mantine/notifications/5.4.1_yjrp4o5lii4tl5f25x3krrfp6i:
+    resolution: {integrity: sha512-HiibhEhS7irz+fz1NYhHUPymeys9E+BttjR6HVrl6d6oKraTJLSdFs7q4aPcCmLRpd1PCHT2AFO5pU+krT2Zjw==}
+    peerDependencies:
+      '@mantine/core': 5.4.1
+      '@mantine/hooks': 5.4.1
+      react: '>=16.8.0'
+      react-dom: '>=16.8.0'
+    dependencies:
+      '@mantine/core': 5.4.1_wg74yri6n7msncsqpz6oaue6ce
+      '@mantine/hooks': 5.4.1_react@18.2.0
+      '@mantine/utils': 5.4.1_react@18.2.0
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
+      react-transition-group: 4.4.2_biqbaboplfbrettd7655fr4n2y
     dev: false
 
   /@mantine/ssr/5.4.1_prwajplxorzrjsqgai7usnvxze:
@@ -1730,6 +1748,13 @@ packages:
     dependencies:
       esutils: 2.0.3
     dev: true
+
+  /dom-helpers/5.2.1:
+    resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
+    dependencies:
+      '@babel/runtime': 7.19.0
+      csstype: 3.1.1
+    dev: false
 
   /dom-serializer/1.4.1:
     resolution: {integrity: sha512-VHwB3KfrcOOkelEG2ZOfxqLZdfkil8PtJi4P8N2MMXucZq2yLp75ClViUlOVwyoHEDjYU433Aq+5zWP61+RGag==}
@@ -3167,7 +3192,6 @@ packages:
       loose-envify: 1.4.0
       object-assign: 4.1.1
       react-is: 16.13.1
-    dev: true
 
   /punycode/2.1.1:
     resolution: {integrity: sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==}
@@ -3221,6 +3245,20 @@ packages:
       use-latest: 1.2.1_iapumuv4e6jcjznwuxpf4tt22e
     transitivePeerDependencies:
       - '@types/react'
+    dev: false
+
+  /react-transition-group/4.4.2_biqbaboplfbrettd7655fr4n2y:
+    resolution: {integrity: sha512-/RNYfRAMlZwDSr6z4zNKV6xu53/e2BuaBbGhbyYIXTrmgu/bGHzmqOs7mJSJBHy9Ud+ApHx3QjrkKSp1pxvlFg==}
+    peerDependencies:
+      react: '>=16.6.0'
+      react-dom: '>=16.6.0'
+    dependencies:
+      '@babel/runtime': 7.19.0
+      dom-helpers: 5.2.1
+      loose-envify: 1.4.0
+      prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0_react@18.2.0
     dev: false
 
   /react/18.2.0:
