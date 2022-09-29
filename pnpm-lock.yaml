@@ -9,13 +9,13 @@ specifiers:
   '@mantine/hooks': ^5.4.1
   '@mantine/next': ^5.4.1
   '@mantine/notifications': ^5.4.1
-  '@prisma/client': ^4.3.1
+  '@prisma/client': ^4.4.0
   '@tabler/icons': ^1.100.0
   '@tanstack/react-query': ^4.3.8
-  '@trpc/client': ^10.0.0-proxy-beta.7
-  '@trpc/next': ^10.0.0-proxy-beta.7
-  '@trpc/react': ^10.0.0-proxy-beta.7
-  '@trpc/server': ^10.0.0-proxy-beta.7
+  '@trpc/client': 10.0.0-proxy-beta.8
+  '@trpc/next': 10.0.0-proxy-beta.8
+  '@trpc/react': 10.0.0-proxy-beta.8
+  '@trpc/server': 10.0.0-proxy-beta.8
   '@types/node': ^18.7.20
   '@types/react': ^18.0.9
   '@typescript-eslint/eslint-plugin': ^5.37.0
@@ -32,7 +32,7 @@ specifiers:
   next: ^12.3.1
   npm-run-all: ^4.1.5
   prettier: ^2.7.1
-  prisma: ^4.3.1
+  prisma: ^4.4.0
   react: ^18.2.0
   react-dom: ^18.2.0
   superjson: ^1.7.4
@@ -49,13 +49,13 @@ dependencies:
   '@mantine/hooks': 5.4.1_react@18.2.0
   '@mantine/next': 5.4.1_6tawbrm53n4muonpugu7ldclma
   '@mantine/notifications': 5.4.1_yjrp4o5lii4tl5f25x3krrfp6i
-  '@prisma/client': 4.3.1_prisma@4.3.1
+  '@prisma/client': 4.4.0_prisma@4.4.0
   '@tabler/icons': 1.100.0_biqbaboplfbrettd7655fr4n2y
   '@tanstack/react-query': 4.6.0_biqbaboplfbrettd7655fr4n2y
-  '@trpc/client': 10.0.0-proxy-beta.7_c5ab5j37m7zpypyi7ejs4npx7a
-  '@trpc/next': 10.0.0-proxy-beta.7_uvaayymfgfswfvhxgxkwqq7m7y
-  '@trpc/react': 10.0.0-proxy-beta.7_khb726g7khcpqm6ha6qindhz2q
-  '@trpc/server': 10.0.0-proxy-beta.7
+  '@trpc/client': 10.0.0-proxy-beta.8_cdx7h2ttezqb2726q3auebavzi
+  '@trpc/next': 10.0.0-proxy-beta.8_iyisxtz4ccwlhq25k32wei6rmi
+  '@trpc/react': 10.0.0-proxy-beta.8_mxaoghr4gfkypv3zl6v2l56n6a
+  '@trpc/server': 10.0.0-proxy-beta.8
   clsx: 1.2.1
   dayjs: 1.11.5
   next: 12.3.1_ir3quccc6i62x6qn6jjhyjjiey
@@ -79,7 +79,7 @@ devDependencies:
   eslint-plugin-react-hooks: 4.6.0_eslint@8.24.0
   npm-run-all: 4.1.5
   prettier: 2.7.1
-  prisma: 4.3.1
+  prisma: 4.4.0
   ts-node: 10.9.1_xncqeq3xkoqhng77wx5a5ihsty
   typescript: 4.8.3
   webpack: 5.74.0
@@ -791,8 +791,8 @@ packages:
       fastq: 1.13.0
     dev: true
 
-  /@prisma/client/4.3.1_prisma@4.3.1:
-    resolution: {integrity: sha512-FA0/d1VMJNWqzU7WVWTNWJ+lGOLR9JUBnF73GdIPAEVo/6dWk4gHx0EmgeU+SMv4MZoxgOeTBJF2azhg7x0hMw==}
+  /@prisma/client/4.4.0_prisma@4.4.0:
+    resolution: {integrity: sha512-ciKOP246x1xwr04G9ajHlJ4pkmtu9Q6esVyqVBO0QJihaKQIUvbPjClp17IsRJyxqNpFm4ScbOc/s9DUzKHINQ==}
     engines: {node: '>=14.17'}
     requiresBuild: true
     peerDependencies:
@@ -801,16 +801,16 @@ packages:
       prisma:
         optional: true
     dependencies:
-      '@prisma/engines-version': 4.3.0-32.c875e43600dfe042452e0b868f7a48b817b9640b
-      prisma: 4.3.1
+      '@prisma/engines-version': 4.4.0-66.f352a33b70356f46311da8b00d83386dd9f145d6
+      prisma: 4.4.0
     dev: false
 
-  /@prisma/engines-version/4.3.0-32.c875e43600dfe042452e0b868f7a48b817b9640b:
-    resolution: {integrity: sha512-8yWpXkQRmiSfsi2Wb/ZS5D3RFbeu/btL9Pm/gdF4phB0Lo5KGsDFMxFMgaD64mwED2nHc8ZaEJg/+4Jymb9Znw==}
+  /@prisma/engines-version/4.4.0-66.f352a33b70356f46311da8b00d83386dd9f145d6:
+    resolution: {integrity: sha512-P5v/PuEIJLYXZUZBvOLPqoyCW+m6StNqHdiR6te++gYVODpPdLakks5HVx3JaZIY+LwR02juJWFlwpc9Eog/ug==}
     dev: false
 
-  /@prisma/engines/4.3.1:
-    resolution: {integrity: sha512-4JF/uMaEDAPdcdZNOrnzE3BvrbGpjgV0FcPT3EVoi6I86fWkloqqxBt+KcK/+fIRR0Pxj66uGR9wVH8U1Y13JA==}
+  /@prisma/engines/4.4.0:
+    resolution: {integrity: sha512-Fpykccxlt9MHrAs/QpPGpI2nOiRxuLA+LiApgA59ibbf24YICZIMWd3SI2YD+q0IAIso0jCGiHhirAIbxK3RyQ==}
     requiresBuild: true
 
   /@radix-ui/number/1.0.0:
@@ -972,54 +972,54 @@ packages:
       use-sync-external-store: 1.2.0_react@18.2.0
     dev: false
 
-  /@trpc/client/10.0.0-proxy-beta.7_c5ab5j37m7zpypyi7ejs4npx7a:
-    resolution: {integrity: sha512-LCzvuD5KHw1K6Shvc3TE8JuVEUxW13vY8Y0zHNTNLfz7am8EgJnlEI/oYe8eKnzOF0X4NorWB6lZineJpV1dkA==}
+  /@trpc/client/10.0.0-proxy-beta.8_cdx7h2ttezqb2726q3auebavzi:
+    resolution: {integrity: sha512-MDdftts73y/e7l9rF4mT8tH8xZjnBdOESCsF4Xs6PP9F8CA8XMEQH5qbftrKKQqKan/fQbi2dEZuhrdjljfGJg==}
     peerDependencies:
-      '@trpc/server': 10.0.0-proxy-beta.7
+      '@trpc/server': 10.0.0-proxy-beta.8
     dependencies:
-      '@trpc/server': 10.0.0-proxy-beta.7
+      '@trpc/server': 10.0.0-proxy-beta.8
     dev: false
 
-  /@trpc/next/10.0.0-proxy-beta.7_uvaayymfgfswfvhxgxkwqq7m7y:
-    resolution: {integrity: sha512-MvH4VQYlLuTGkP65vTDcbH4Gq9lwu/Po+bEVE+ifXwH4g55jW5Q+8nQSRsNyMcPniHL9oZNm5eAICPb5saEhFg==}
+  /@trpc/next/10.0.0-proxy-beta.8_iyisxtz4ccwlhq25k32wei6rmi:
+    resolution: {integrity: sha512-N3g2vGB/zrTNc7/oNCgE+W4hk3bqLBWBHGzuUXGVgtn8wI+acsrpU1bPrmzG9SrMzCDc2/E1Rb/kLcgaB8udNQ==}
     peerDependencies:
       '@tanstack/react-query': ^4.3.8
-      '@trpc/client': 10.0.0-proxy-beta.7
-      '@trpc/react': 10.0.0-proxy-beta.7
-      '@trpc/server': 10.0.0-proxy-beta.7
+      '@trpc/client': 10.0.0-proxy-beta.8
+      '@trpc/react': 10.0.0-proxy-beta.8
+      '@trpc/server': 10.0.0-proxy-beta.8
       next: '*'
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@swc/helpers': 0.4.11
       '@tanstack/react-query': 4.6.0_biqbaboplfbrettd7655fr4n2y
-      '@trpc/client': 10.0.0-proxy-beta.7_c5ab5j37m7zpypyi7ejs4npx7a
-      '@trpc/react': 10.0.0-proxy-beta.7_khb726g7khcpqm6ha6qindhz2q
-      '@trpc/server': 10.0.0-proxy-beta.7
+      '@trpc/client': 10.0.0-proxy-beta.8_cdx7h2ttezqb2726q3auebavzi
+      '@trpc/react': 10.0.0-proxy-beta.8_mxaoghr4gfkypv3zl6v2l56n6a
+      '@trpc/server': 10.0.0-proxy-beta.8
       next: 12.3.1_ir3quccc6i62x6qn6jjhyjjiey
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-ssr-prepass: 1.5.0_react@18.2.0
     dev: false
 
-  /@trpc/react/10.0.0-proxy-beta.7_khb726g7khcpqm6ha6qindhz2q:
-    resolution: {integrity: sha512-IslzqygvK7bJvDOq9ly6Wpl3CI9W+kw3BVklee267Za8d4G9p4VFNqFo9ycqI8wHmWle8hk69/AUjx+3+Wltfw==}
+  /@trpc/react/10.0.0-proxy-beta.8_mxaoghr4gfkypv3zl6v2l56n6a:
+    resolution: {integrity: sha512-YE0/T6ej5kTFCn4n6YMXXvMmKAR0TZcAD9tVmzWxGEYlmhqrR9a8b9N6aCh67v91MHMSi8g/kcR1mmdyXZQFAw==}
     peerDependencies:
       '@tanstack/react-query': ^4.3.8
-      '@trpc/client': 10.0.0-proxy-beta.7
-      '@trpc/server': 10.0.0-proxy-beta.7
+      '@trpc/client': 10.0.0-proxy-beta.8
+      '@trpc/server': 10.0.0-proxy-beta.8
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
     dependencies:
       '@tanstack/react-query': 4.6.0_biqbaboplfbrettd7655fr4n2y
-      '@trpc/client': 10.0.0-proxy-beta.7_c5ab5j37m7zpypyi7ejs4npx7a
-      '@trpc/server': 10.0.0-proxy-beta.7
+      '@trpc/client': 10.0.0-proxy-beta.8_cdx7h2ttezqb2726q3auebavzi
+      '@trpc/server': 10.0.0-proxy-beta.8
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /@trpc/server/10.0.0-proxy-beta.7:
-    resolution: {integrity: sha512-u4FTbq21Gztg17JoePmhHk0ICzlLCUKI6w2x5ZPpHUWn4ysdjX4ZRm5dipHk8h4GDIDvpr7nD4BScwdMkbl4Vg==}
+  /@trpc/server/10.0.0-proxy-beta.8:
+    resolution: {integrity: sha512-JSKA9f+nV5Mu3Yczbm3iWfu1S94Yj/xM6pjp/P0kCdtyKBm9qqoMsxpx6Qf6LISGKNYA/uV2LdFln2Xdw4T8Lg==}
     dev: false
 
   /@tsconfig/node10/1.0.9:
@@ -3174,13 +3174,13 @@ packages:
     hasBin: true
     dev: true
 
-  /prisma/4.3.1:
-    resolution: {integrity: sha512-90xo06wtqil76Xsi3mNpc4Js3SdDRR5g4qb9h+4VWY4Y8iImJY6xc3PX+C9xxTSt1lr0Q89A0MLkJjd8ax6KiQ==}
+  /prisma/4.4.0:
+    resolution: {integrity: sha512-l/QKLmLcKJQFuc+X02LyICo0NWTUVaNNZ00jKJBqwDyhwMAhboD1FWwYV50rkH4Wls0RviAJSFzkC2ZrfawpfA==}
     engines: {node: '>=14.17'}
     hasBin: true
     requiresBuild: true
     dependencies:
-      '@prisma/engines': 4.3.1
+      '@prisma/engines': 4.4.0
 
   /process-nextick-args/2.0.1:
     resolution: {integrity: sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==}

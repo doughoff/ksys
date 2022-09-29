@@ -25,32 +25,31 @@ const AddPostModal: React.FunctionComponent<Props> = ({ isOpen, onClose }) => {
     validate: zodResolver(postSchema),
   });
 
-  const { mutateAsync, error, isLoading, isSuccess } =
-    trpc.post.add.useMutation({
-      async onSuccess() {
-        await trpcUtils.post.list.invalidate();
-      },
-    });
+  const { mutateAsync, isLoading } = trpc.post.add.useMutation({
+    async onSuccess() {
+      await trpcUtils.post.list.invalidate();
+    },
+  });
 
   async function handleSubmit() {
-    await mutateAsync(form.values);
-
-    if (!error && isSuccess) {
-      showNotification({
-        title: 'Post added',
-        message: 'Post has been added successfully',
-        color: 'green',
-        icon: <IconCheck />,
+    mutateAsync(form.values)
+      .then(() => {
+        showNotification({
+          title: 'Post added',
+          message: 'Post has been added successfully',
+          color: 'green',
+          icon: <IconCheck />,
+        });
+        form.reset();
+        onClose();
+      })
+      .catch(() => {
+        showNotification({
+          title: 'Error',
+          message: 'Something went wrong',
+          color: 'red',
+        });
       });
-      form.reset();
-      onClose();
-    } else {
-      showNotification({
-        title: 'Error',
-        message: 'Something went wrong',
-        color: 'red',
-      });
-    }
   }
 
   return (

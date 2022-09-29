@@ -21,3 +21,15 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
+
+model Entity {
+  id           Int    @id @default(autoincrement())
+  name         String
+  cellphone    String
+  documentType String @map("document_type")
+  document     String @unique
+  creditLimit  Int    @default(0) @map("credit_limit")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+}

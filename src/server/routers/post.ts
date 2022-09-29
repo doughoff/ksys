@@ -25,6 +25,7 @@ export const postRouter = t.router({
   list: t.procedure
     .input(
       z.object({
+        text: z.string().optional(),
         pagination: z.object({
           page: z.number().min(1).default(1),
           pageSize: z.number().min(1).max(100).default(10),
@@ -33,19 +34,68 @@ export const postRouter = t.router({
     )
     .query(async ({ input }) => {
       const { page, pageSize } = input.pagination;
-      const count = await prisma.post.count();
+      const count = await prisma.post.count({
+        where: {
+          text: {
+            contains: input.text,
+          },
+        },
+      });
       const items = await prisma.post.findMany({
         select: defaultPostSelect,
+        where: {
+          text: {
+            contains: input.text,
+          },
+        },
         take: pageSize + 1,
         skip: (page - 1) * pageSize,
         orderBy: {
-          createdAt: 'desc',
+          createdAt: 'asc',
         },
       });
 
       return {
         items: items.slice(0, pageSize),
-        count: 25,
+        count: count,
+      };
+    }),
+  listInfinite: t.procedure
+    .input(
+      z.object({
+        title: z.string().optional(),
+        pagination: z.object({
+          page: z.number().min(1).default(1),
+          pageSize: z.number().min(1).max(100).default(10),
+        }),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      const { page, pageSize } = input.pagination;
+      const count = await prisma.post.count({
+        where: {
+          title: {
+            contains: input.title,
+          },
+        },
+      });
+      const items = await prisma.post.findMany({
+        select: defaultPostSelect,
+        where: {
+          title: {
+            contains: input.title,
+          },
+        },
+        take: pageSize + 1,
+        skip: (page - 1) * pageSize,
+        orderBy: {
+          createdAt: 'asc',
+        },
+      });
+
+      return {
+        items: items,
+        count: count,
       };
     }),
   byId: t.procedure
@@ -77,6 +127,9 @@ export const postRouter = t.router({
       }),
     )
     .mutation(async ({ input }) => {
+      // fake longe running operation
+      await new Promise((r) => setTimeout(r, 2000));
+
       const post = await prisma.post.create({
         data: input,
         select: defaultPostSelect,
