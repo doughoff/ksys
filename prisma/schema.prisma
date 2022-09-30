@@ -42,10 +42,11 @@ enum IVA {
 model Entity {
   id           Int           @id @default(autoincrement())
   name         String
-  cellphone    String
+  cellphone    String?
   documentType DocumentType? @map("document_type")
-  document     String        @unique
+  document     String?       @unique
   creditLimit  Int           @default(0) @map("credit_limit")
+  address      String?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
