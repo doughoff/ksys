@@ -22,6 +22,10 @@ const IndexPage: NextPageWithLayout = () => {
     { onSuccess: (data) => pagination.setTotal(data.count) },
   );
 
+  React.useEffect(() => {
+    console.log(data);
+  }, [data]);
+
   return (
     <>
       <Head>

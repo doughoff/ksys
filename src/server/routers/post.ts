@@ -56,44 +56,6 @@ export const postRouter = t.router({
       });
 
       return {
-        items: items.slice(0, pageSize),
-        count: count,
-      };
-    }),
-  listInfinite: t.procedure
-    .input(
-      z.object({
-        title: z.string().optional(),
-        pagination: z.object({
-          page: z.number().min(1).default(1),
-          pageSize: z.number().min(1).max(100).default(10),
-        }),
-      }),
-    )
-    .mutation(async ({ input }) => {
-      const { page, pageSize } = input.pagination;
-      const count = await prisma.post.count({
-        where: {
-          title: {
-            contains: input.title,
-          },
-        },
-      });
-      const items = await prisma.post.findMany({
-        select: defaultPostSelect,
-        where: {
-          title: {
-            contains: input.title,
-          },
-        },
-        take: pageSize + 1,
-        skip: (page - 1) * pageSize,
-        orderBy: {
-          createdAt: 'asc',
-        },
-      });
-
-      return {
         items: items,
         count: count,
       };
