@@ -21,3 +21,189 @@ model Post {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
+
+enum Status {
+  ACTIVE
+  PENDING
+  DELETED
+}
+
+enum DocumentType {
+  RUC
+  CI
+}
+
+enum IVA {
+  IVA_0
+  IVA_5
+  IVA_10
+}
+
+model Entity {
+  id           Int           @id @default(autoincrement())
+  name         String
+  cellphone    String?
+  documentType DocumentType? @map("document_type")
+  document     String?       @unique
+  creditLimit  Int           @default(0) @map("credit_limit")
+  address      String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status    Status    @default(ACTIVE)
+  deletedAt DateTime? @map("deleted_at")
+  Sale      Sale[]
+  Credit    Credit[]
+}
+
+model Product {
+  id          Int    @id @default(autoincrement())
+  name        String
+  description String
+  price       Int
+  stock       Int
+  lastCost    Int    @map("last_cost")
+
+  iva IVA @default(IVA_10)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status          Status            @default(ACTIVE)
+  deletedAt       DateTime?         @map("deleted_at")
+  StockEntryItems StockEntryItems[]
+  SaleItems       SaleItems[]
+}
+
+model StockEntry {
+  id Int @id @default(autoincrement())
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status    Status    @default(ACTIVE)
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("stock_entries")
+}
+
+model StockEntryItems {
+  id Int @id @default(autoincrement())
+
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  cost      Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status    Status    @default(ACTIVE)
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("stock_entry_items")
+}
+
+model Sale {
+  id Int @id @default(autoincrement())
+
+  entityId Int    @map("entity_id")
+  entity   Entity @relation(fields: [entityId], references: [id])
+
+  printNumber String? @unique @map("print_number")
+  document    String?
+  address     String?
+
+  total Int @default(0)
+
+  totalIva5  Int @default(0) @map("total_iva_5")
+  totalIva10 Int @default(0) @map("total_iva_10")
+  totalIva0  Int @default(0) @map("total_iva_0")
+
+  liqIva5  Int @default(0) @map("liq_iva_5")
+  liqIva10 Int @default(0) @map("liq_iva_10")
+  liqIva0  Int @default(0) @map("liq_iva_0")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status    Status      @default(ACTIVE)
+  deletedAt DateTime?   @map("deleted_at")
+  SaleItems SaleItems[]
+  Credit    Credit[]
+}
+
+model SaleItems {
+  id Int @id @default(autoincrement())
+
+  saleId    Int     @map("sale_id")
+  sale      Sale    @relation(fields: [saleId], references: [id])
+  productId Int     @map("product_id")
+  product   Product @relation(fields: [productId], references: [id])
+
+  description String
+  quantity    Int
+  price       Int
+  iva         IVA
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status    Status    @default(ACTIVE)
+  deletedAt DateTime? @map("deleted_at")
+
+  @@map("sale_items")
+}
+
+model Credit {
+  id Int @id @default(autoincrement())
+
+  entityId Int    @map("entity_id")
+  entity   Entity @relation(fields: [entityId], references: [id])
+
+  saleId Int?  @map("sale_id")
+  sale   Sale? @relation(fields: [saleId], references: [id])
+
+  originalAmount Int @map("original_amount")
+  amount         Int
+  paymentLeft    Int @map("payment_left")
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status    Status     @default(ACTIVE)
+  deletedAt DateTime?  @map("deleted_at")
+  Interest  Interest[]
+  Payment   Payment[]
+}
+
+model Interest {
+  id Int @id @default(autoincrement())
+
+  creditId Int    @map("credit_id")
+  credit   Credit @relation(fields: [creditId], references: [id])
+
+  amount Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status    Status    @default(ACTIVE)
+  deletedAt DateTime? @map("deleted_at")
+}
+
+model Payment {
+  id Int @id @default(autoincrement())
+
+  creditId Int    @map("credit_id")
+  credit   Credit @relation(fields: [creditId], references: [id])
+
+  amount Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status    Status    @default(ACTIVE)
+  deletedAt DateTime? @map("deleted_at")
+}
