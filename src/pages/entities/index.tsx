@@ -1,17 +1,25 @@
 import { Button, Group, Stack, TextInput, Title } from '@mantine/core';
 import { Entity } from '@prisma/client';
 import { IconSearch } from '@tabler/icons';
+import type {
+  AnyQueryProcedure,
+  inferProcedureInput,
+  inferProcedureOutput,
+} from '@trpc/server';
 import dayjs from 'dayjs';
 import Head from 'next/head';
 import React from 'react';
 import EntityFormModal from '~/components/forms/EntityFormModal';
+import GenericTable from '~/components/organisms/genericTable/GenericTable';
 import PaginatedTable from '~/components/organisms/PaginatedTable/PaginatedTable';
 import { usePagination } from '~/hooks/usePagination';
+import { appRouter, AppRouter } from '~/server/routers/_app';
 import { trpc } from '~/utils/trpc';
 import { NextPageWithLayout } from '../_app';
 
 const IndexPage: NextPageWithLayout = () => {
   const [isOpen, setIsOpen] = React.useState(false);
+  const [text, setText] = React.useState('');
   const [search, setSearch] = React.useState('');
   const pagination = usePagination();
   const { data, isLoading, isError, error } = trpc.entity.list.useQuery(
@@ -22,9 +30,17 @@ const IndexPage: NextPageWithLayout = () => {
     { onSuccess: (data) => pagination.setTotal(data.count) },
   );
 
+  //expose type keys of AppRouter
+  type AppRouterKeys = keyof AppRouter;
+
+  const tpl = trpc.post.list;
+
   React.useEffect(() => {
-    console.log(data);
-  }, [data]);
+    const timeout = setTimeout(() => {
+      setSearch(text);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [text]);
 
   return (
     <>
@@ -41,8 +57,18 @@ const IndexPage: NextPageWithLayout = () => {
         <TextInput
           label="Search"
           icon={<IconSearch />}
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+        <GenericTable
+          query={trpc.entity.list}
+          input={{ text: search, pagination: pagination.data, limit: 10 }}
+          queryOptions={{
+            onSuccess: (data) => pagination.setTotal(data.count),
+          }}
+          rows={(data) =>
+            data?.items.map((item) => <div key={item.id}>{item.name}</div>)
+          }
         />
         <PaginatedTable
           items={data?.items ?? []}

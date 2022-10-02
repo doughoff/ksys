@@ -4,12 +4,14 @@ import {
   entityCreateSchema,
   entityFilterSchema,
   entityUpdateSchema,
+  tagsSchema,
 } from '~/validators/entity';
 import { prisma } from '../prisma';
 import { t } from '../trpc';
 
 export const entityRouter = t.router({
   list: t.procedure.input(entityFilterSchema).query(async ({ input }) => {
+    console.log(tagsSchema.parse(['tag1', 'tag2']));
     const pagination = parsePagination(input.pagination);
 
     const filter = Prisma.validator<Prisma.EntityWhereInput>()({
@@ -41,10 +43,9 @@ export const entityRouter = t.router({
     return entity;
   }),
   update: t.procedure.input(entityUpdateSchema).mutation(async ({ input }) => {
-    const data = parseActiveStatus(input);
     const entity = await prisma.entity.update({
       where: { id: input.id },
-      data: data,
+      data: input,
     });
     return entity;
   }),
