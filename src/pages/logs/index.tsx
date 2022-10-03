@@ -5,10 +5,11 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { trpc } from '~/utils/trpc';
+import { LogsFilter, LogsFilterSchema } from '~/validators/log';
 import { NextPageWithLayout } from '../_app';
 
 const IndexPage: NextPageWithLayout = () => {
-  const [filters, setFilters] = useState<{ table?: string; rowId?: number }>();
+  const [filters, setFilters] = useState<LogsFilter>();
   const { data, refetch } = trpc.log.list.useQuery(
     { ...filters },
     { enabled: false },
@@ -19,12 +20,7 @@ const IndexPage: NextPageWithLayout = () => {
       table: '',
       rowId: 0,
     },
-    validate: zodResolver(
-      z.object({
-        table: z.string(),
-        rowId: z.number(),
-      }),
-    ),
+    validate: zodResolver(LogsFilterSchema),
   });
 
   async function handleSubmit() {
