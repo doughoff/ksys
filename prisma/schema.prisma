@@ -7,7 +7,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 model Post {
@@ -206,4 +207,21 @@ model Payment {
 
   status    Status    @default(ACTIVE)
   deletedAt DateTime? @map("deleted_at")
+}
+
+enum LogType {
+  CREATE
+  UPDATE
+}
+
+model Log {
+  id Int @id @default(autoincrement())
+
+  createdAt DateTime @default(now()) @map("created_at")
+
+  table String
+  rowId Int     @map("row_id")
+  type  LogType
+
+  data Json?
 }

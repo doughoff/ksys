@@ -6,7 +6,13 @@ import {
   UnstyledButton,
 } from '@mantine/core';
 import { NextLink } from '@mantine/next';
-import { IconGauge, IconHome2, IconUser, TablerIcon } from '@tabler/icons';
+import {
+  IconActivity,
+  IconGauge,
+  IconHome2,
+  IconUser,
+  TablerIcon,
+} from '@tabler/icons';
 import { useRouter } from 'next/router';
 import NoSSR from '../atoms/NoSSRTooltip/NoSSRTooltip';
 
@@ -79,6 +85,7 @@ const mockdata = [
   { icon: IconHome2, label: 'Página', href: '/', exactMatch: true },
   { icon: IconGauge, label: 'Dashboard', href: '/posts' },
   { icon: IconUser, label: 'Clientes', href: '/entities' },
+  { icon: IconActivity, label: 'Logs', href: '/logs' },
 ];
 
 export function NavbarMinimal() {

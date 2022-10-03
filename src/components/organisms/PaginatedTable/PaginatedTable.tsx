@@ -1,8 +1,10 @@
 import { Center, Pagination, Table } from '@mantine/core';
 import { PaginationController } from '~/hooks/usePagination';
+import { LoadingOverlay, Button, Group } from '@mantine/core';
 
 export interface Props<T> {
   items: T[];
+  isLoading?: boolean;
   header: () => React.ReactNode;
   rows: (item: T) => React.ReactNode;
   pagination: PaginationController;

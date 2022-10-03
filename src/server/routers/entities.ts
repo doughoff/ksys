@@ -1,9 +1,11 @@
 import { Prisma } from '@prisma/client';
+import { z } from 'zod';
 import { parseActiveStatus, parsePagination } from '~/validators/common';
 import {
   entityCreateSchema,
   entityFilterSchema,
   entityUpdateSchema,
+  tagsSchema,
 } from '~/validators/entity';
 import { prisma } from '../prisma';
 import { t } from '../trpc';
@@ -11,7 +13,6 @@ import { t } from '../trpc';
 export const entityRouter = t.router({
   list: t.procedure.input(entityFilterSchema).query(async ({ input }) => {
     const pagination = parsePagination(input.pagination);
-
     const filter = Prisma.validator<Prisma.EntityWhereInput>()({
       OR: [
         { name: { contains: input.text } },
@@ -34,18 +35,51 @@ export const entityRouter = t.router({
       count: count,
     };
   }),
+  byId: t.procedure
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input }) => {
+      return prisma.entity.findUnique({
+        where: { id: input.id },
+      });
+    }),
   add: t.procedure.input(entityCreateSchema).mutation(async ({ input }) => {
-    const entity = await prisma.entity.create({
-      data: input,
+    return prisma.$transaction(async (prisma) => {
+      const newEntity = await prisma.entity.create({
+        data: input,
+      });
+
+      await prisma.log.create({
+        data: {
+          table: 'entity',
+          rowId: newEntity.id,
+          type: 'CREATE',
+          data: input,
+        },
+      });
+
+      return newEntity;
     });
-    return entity;
   }),
   update: t.procedure.input(entityUpdateSchema).mutation(async ({ input }) => {
-    const data = parseActiveStatus(input);
-    const entity = await prisma.entity.update({
-      where: { id: input.id },
-      data: data,
+    return prisma.$transaction(async (prisma) => {
+      const entity = await prisma.entity.update({
+        where: { id: input.id },
+        data: input,
+      });
+
+      await prisma.log.create({
+        data: {
+          table: 'entity',
+          rowId: entity.id,
+          type: 'UPDATE',
+          data: {
+            ...input,
+            deletedAt: undefined,
+          },
+        },
+      });
+
+      return entity;
     });
-    return entity;
   }),
 });
