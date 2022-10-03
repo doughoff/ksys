@@ -44,6 +44,7 @@ const EntityFormModal: React.FunctionComponent<Props> = ({
     const documentType = documentTypeSchema
       .optional()
       .parse(form.values.documentType);
+
     mutateAsync({
       ...form.values,
       documentType,

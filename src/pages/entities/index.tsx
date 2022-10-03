@@ -1,13 +1,9 @@
 import { Button, Group, Stack, TextInput, Title } from '@mantine/core';
-import { Entity } from '@prisma/client';
 import { IconSearch } from '@tabler/icons';
-import type {
-  AnyQueryProcedure,
-  inferProcedureInput,
-  inferProcedureOutput,
-} from '@trpc/server';
+import { NextLink } from '@mantine/next';
 import dayjs from 'dayjs';
 import Head from 'next/head';
+import Link from 'next/link';
 import React from 'react';
 import EntityFormModal from '~/components/forms/EntityFormModal';
 import GenericTable from '~/components/organisms/genericTable/GenericTable';
@@ -22,18 +18,13 @@ const IndexPage: NextPageWithLayout = () => {
   const [text, setText] = React.useState('');
   const [search, setSearch] = React.useState('');
   const pagination = usePagination();
-  const { data, isLoading, isError, error } = trpc.entity.list.useQuery(
+  const { data } = trpc.entity.list.useQuery(
     {
       text: search,
       pagination: pagination.data,
     },
     { onSuccess: (data) => pagination.setTotal(data.count) },
   );
-
-  //expose type keys of AppRouter
-  type AppRouterKeys = keyof AppRouter;
-
-  const tpl = trpc.post.list;
 
   React.useEffect(() => {
     const timeout = setTimeout(() => {
@@ -60,16 +51,6 @@ const IndexPage: NextPageWithLayout = () => {
           value={text}
           onChange={(e) => setText(e.target.value)}
         />
-        <GenericTable
-          query={trpc.entity.list}
-          input={{ text: search, pagination: pagination.data, limit: 10 }}
-          queryOptions={{
-            onSuccess: (data) => pagination.setTotal(data.count),
-          }}
-          rows={(data) =>
-            data?.items.map((item) => <div key={item.id}>{item.name}</div>)
-          }
-        />
         <PaginatedTable
           items={data?.items ?? []}
           header={() => (
@@ -89,8 +70,13 @@ const IndexPage: NextPageWithLayout = () => {
               </td>
               <td>{dayjs(row.createdAt).format('DD/MM/YYYY')}</td>
               <td width={'120px'}>
-                <Button variant="filled" onClick={() => setIsOpen(true)}>
-                  Editar
+                <Button
+                  variant="filled"
+                  onClick={() => setIsOpen(true)}
+                  component={NextLink}
+                  href={`/entities/${row.id}`}
+                >
+                  Detalles
                 </Button>
               </td>
             </tr>
