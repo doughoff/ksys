@@ -48,6 +48,7 @@ const EntityFormModal: React.FunctionComponent<Props> = ({
     trpc.entity.update.useMutation({
       async onSuccess() {
         await trpcUtils.entity.list.invalidate();
+        await trpcUtils.entity.byId.invalidate({ id: entity?.id ?? 0 });
       },
     });
 
