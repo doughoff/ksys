@@ -18,6 +18,7 @@ import {
   IconShoppingCart,
 } from '@tabler/icons';
 import dayjs from 'dayjs';
+import PageHeader from '~/components/molecules/PageHeader';
 
 const EntityDetailPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;
@@ -46,13 +47,14 @@ const EntityDetailPage: NextPageWithLayout = () => {
   );
 
   return (
-    <Stack>
-      <Group position={'apart'}>
-        <Title order={3}>{entity.name}</Title>
+    <PageHeader
+      title={entity.name}
+      extra={[
         <Button variant={'outline'} color={'blue'} rightIcon={<IconGridDots />}>
           Acciones
-        </Button>
-      </Group>
+        </Button>,
+      ]}
+    >
       <Grid>
         <Grid.Col span={3}>
           <Description label={'Documento'} data={entity?.document} />
@@ -127,7 +129,7 @@ const EntityDetailPage: NextPageWithLayout = () => {
           <Title order={4}>Ventas</Title>
         </Tabs.Panel>
       </Tabs>
-    </Stack>
+    </PageHeader>
   );
 };
 
