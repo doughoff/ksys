@@ -19,6 +19,7 @@ import {
 } from '@tabler/icons';
 import dayjs from 'dayjs';
 import PageHeader from '~/components/molecules/PageHeader';
+import { Description } from '~/components/atoms/Description';
 
 const EntityDetailPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;
@@ -29,79 +30,54 @@ const EntityDetailPage: NextPageWithLayout = () => {
   if (error) return <div>failed to load</div>;
   if (!entity) return <div>loading...</div>;
 
-  const Description = ({
-    label,
-    data,
-    align = 'left',
-  }: {
-    label: string;
-    data?: string | null;
-    align?: 'left' | 'right';
-  }) => (
-    <Stack spacing={'xs'}>
-      <Text size={'sm'} weight={'bold'} align={align}>
-        {label}
-      </Text>
-      <Text align={align}>{data}</Text>
-    </Stack>
-  );
-
   return (
     <PageHeader
       title={entity.name}
       extra={[
-        <Button variant={'outline'} color={'blue'} rightIcon={<IconGridDots />}>
+        <Button
+          key={'actions'}
+          variant={'outline'}
+          color={'blue'}
+          rightIcon={<IconGridDots />}
+        >
           Acciones
         </Button>,
       ]}
     >
       <Grid>
-        <Grid.Col span={3}>
-          <Description label={'Documento'} data={entity?.document} />
-        </Grid.Col>
+        <Description label={'Documento'} data={entity?.document} />
 
-        <Grid.Col span={3}>
-          <Description
-            label={'Tipo Documento'}
-            data={entity.documentType?.toString()}
-          />
-        </Grid.Col>
+        <Description
+          label={'Tipo Documento'}
+          data={entity.documentType?.toString()}
+        />
 
-        <Grid.Col span={3}>
-          <Description
-            label={'Creación'}
-            data={dayjs(entity.createdAt).format('DD/MM/YYYY')}
-          />
-        </Grid.Col>
-        <Grid.Col span={3}>
-          <Description
-            label={'Teléfono'}
-            data={entity.cellphone ?? 'Sin teléfono'}
-          />
-        </Grid.Col>
+        <Description
+          label={'Creación'}
+          data={dayjs(entity.createdAt).format('DD/MM/YYYY')}
+        />
+        <Description
+          label={'Teléfono'}
+          data={entity.cellphone ?? 'Sin teléfono'}
+        />
 
-        <Grid.Col span={6}>
-          <Description
-            label={'Dirección'}
-            data={entity.address ?? 'Sin dirección'}
-          />
-        </Grid.Col>
+        <Description
+          span={6}
+          label={'Dirección'}
+          data={entity.address ?? 'Sin dirección'}
+        />
 
-        <Grid.Col span={3}>
-          <Description
-            label={'Limite crédito'}
-            data={'1.000.000 Gs.'}
-            align={'right'}
-          />
-        </Grid.Col>
+        <Description
+          label={'Limite crédito'}
+          data={'1.000.000 Gs.'}
+          align={'right'}
+        />
 
-        <Grid.Col span={3}>
-          <Description
-            label={'Pago Pendiente'}
-            data={'950.000 Gs.'}
-            align={'right'}
-          />
-        </Grid.Col>
+        <Description
+          label={'Pago Pendiente'}
+          data={'950.000 Gs.'}
+          align={'right'}
+        />
       </Grid>
 
       <Tabs defaultValue={'pendingPayments'}>
