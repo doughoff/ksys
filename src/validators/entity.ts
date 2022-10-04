@@ -12,16 +12,6 @@ export const documentTypeSchema = z.enum(['RUC', 'CI'], {
   invalid_type_error: 'El tipo de documento es inválido, debe ser RUC o CI',
 });
 
-export const tagsSchema = z.array(z.string()).transform((tags, ctx) => {
-  console.log(ctx);
-  return {
-    connectOrCreate: tags.map((tag) => ({
-      where: { tag: tag },
-      create: { tag: tag },
-    })),
-  };
-});
-
 export const entitySchema = z.object({
   name: z
     .string({
@@ -32,7 +22,8 @@ export const entitySchema = z.object({
     })
     .max(100, {
       message: 'El nombre debe tener máximo 100 caracteres',
-    }),
+    })
+    .transform((name) => name.toUpperCase().trim()),
   cellphone: z
     .string()
     .max(30, {
@@ -68,16 +59,6 @@ export type EntityCreate = z.infer<typeof entityCreateSchema>;
 export const entityUpdateSchema = entitySchema
   .extend({
     id: z.number(),
-    active: z.boolean().optional(),
   })
-  .partial()
-  .transform((value, ctx) => {
-    if (value.active === false) {
-      return {
-        ...value,
-        deletedAt: new Date(),
-      };
-    }
-    return value;
-  });
+  .partial();
 export type EntityUpdate = z.infer<typeof entityUpdateSchema>;

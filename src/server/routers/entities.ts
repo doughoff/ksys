@@ -5,7 +5,6 @@ import {
   entityCreateSchema,
   entityFilterSchema,
   entityUpdateSchema,
-  tagsSchema,
 } from '~/validators/entity';
 import { prisma } from '../prisma';
 import { t } from '../trpc';
