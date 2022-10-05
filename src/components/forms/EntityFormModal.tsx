@@ -10,6 +10,7 @@ import {
 import { useForm, zodResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { Entity } from '@prisma/client';
+import { currencyFormatter, currencyParser } from '~/utils/formatters';
 import { trpc } from '~/utils/trpc';
 import { documentTypeSchema, entityCreateSchema } from '~/validators/entity';
 
@@ -114,13 +115,10 @@ const EntityFormModal: React.FunctionComponent<Props> = ({
           />
           <TextInput label="Celular" {...form.getInputProps('cellphone')} />
           <TextInput label="Dirección" {...form.getInputProps('address')} />
-          {/* 
-						TODO:  Create parsers and formatters for currency  
-						https://mantine.dev/core/number-input/#currency 
-            for guaranies
-					*/}
           <NumberInput
             label="Limite de Crédito"
+            parser={currencyParser}
+            formatter={currencyFormatter}
             {...form.getInputProps('creditLimit')}
           />
           <Group position="right" mt="md" spacing="md">

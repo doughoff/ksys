@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+export const statusSchema = z.enum(['ACTIVE', 'DELETED'], {
+  required_error: 'El estado es requerido',
+  invalid_type_error: 'El estado es inválido, debe ser ACTIVE o DELETED',
+});
+
+export const ivaSchema = z.enum(['IVA_0', 'IVA_5', 'IVA_10'], {
+  required_error: 'El IVA es requerido',
+  invalid_type_error: 'El IVA es inválido, debe ser IVA_0 o IVA_12',
+});
+
 export const paginationSchema = z.object({
   page: z
     .number()
