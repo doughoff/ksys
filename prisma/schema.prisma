@@ -58,13 +58,13 @@ model Entity {
 }
 
 model Product {
-  id          Int    @id @default(autoincrement())
-  barcode     String @unique
+  id          Int     @id @default(autoincrement())
+  barcode     String  @unique
   name        String
-  description String
+  description String?
   price       Int
   stock       Int
-  lastCost    Int    @map("last_cost")
+  lastCost    Int     @map("last_cost")
 
   iva IVA @default(IVA_10)
 

@@ -25,13 +25,10 @@ export const productSchema = z.object({
     .string({
       required_error: 'La descripción es requerida',
     })
-    .min(3, {
-      message: 'La descripción debe tener al menos 3 caracteres',
-    })
     .max(100, {
       message: 'La descripción debe tener máximo 100 caracteres',
     })
-    .default('')
+    .optional()
     .transform((description) => description?.toUpperCase().trim()),
   stock: z
     .number({
@@ -58,14 +55,11 @@ export const productCreateSchema = productSchema;
 export type ProductCreate = z.infer<typeof productCreateSchema>;
 
 export const productUpdateSchema = productSchema
+  .partial()
   .extend({
     id: z.number({
       required_error: 'El id es requerido',
     }),
-  })
-  .partial({
-    id: true,
-    status: true,
   })
   .transform((value) => {
     if (value.status === 'DELETED') {

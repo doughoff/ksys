@@ -23,6 +23,7 @@ import PageHeader from '~/components/molecules/PageHeader';
 import { Description } from '~/components/atoms/Description';
 import EntityFormModal from '~/components/forms/EntityFormModal';
 import React from 'react';
+import { currencyFormatter } from '~/utils/formatters';
 
 const EntityDetailPage: NextPageWithLayout = () => {
   const id = useRouter().query.id as string;
@@ -70,7 +71,7 @@ const EntityDetailPage: NextPageWithLayout = () => {
         />
         <Description
           label={'Limite crédito'}
-          data={'1.000.000 Gs.'}
+          data={currencyFormatter(entity.creditLimit)}
           align={'right'}
         />
         <Description

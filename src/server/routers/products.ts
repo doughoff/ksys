@@ -62,7 +62,7 @@ export const productRouter = t.router({
   update: t.procedure.input(productUpdateSchema).mutation(async ({ input }) => {
     // check if product with barcode already exists
     const checkBarcode = await prisma.product.findUnique({
-      where: { barcode: input.barcode },
+      where: { id: input.id },
     });
 
     if (checkBarcode && checkBarcode.id !== input.id) {

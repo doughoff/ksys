@@ -1,4 +1,5 @@
 import { Button, TextInput } from '@mantine/core';
+import { NextLink } from '@mantine/next';
 import { IconPlus, IconSearch } from '@tabler/icons';
 import Head from 'next/head';
 import React from 'react';
@@ -59,6 +60,7 @@ const ProductsPage: NextPageWithLayout = () => {
           header={() => (
             <tr>
               <th>Cod.</th>
+              <th>Cod. Barras</th>
               <th>Nombre</th>
               <th>Precio</th>
               <th>Stock</th>
@@ -68,10 +70,20 @@ const ProductsPage: NextPageWithLayout = () => {
           rows={(item) => (
             <tr key={item.id}>
               <td>{item.id}</td>
+              <td>{item.barcode}</td>
               <td>{item.name}</td>
               <td>{item.price}</td>
               <td>{item.stock}</td>
-              <td>Acciones</td>
+              <td width={120}>
+                <Button
+                  variant="filled"
+                  color="blue"
+                  component={NextLink}
+                  href={`/products/${item.id}`}
+                >
+                  Detalles
+                </Button>
+              </td>
             </tr>
           )}
           pagination={pagination}

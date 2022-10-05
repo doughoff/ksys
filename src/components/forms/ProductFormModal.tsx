@@ -1,7 +1,8 @@
-import { Button, Group, Modal, TextInput } from '@mantine/core';
+import { Button, Group, Modal, NumberInput, TextInput } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { Product } from '@prisma/client';
+import { currencyFormatter, currencyParser } from '~/utils/formatters';
 import { trpc } from '~/utils/trpc';
 import { productCreateSchema } from '~/validators/product';
 
@@ -93,9 +94,11 @@ const ProductFormModal: React.FunctionComponent<Props> = ({
           {...form.getInputProps('description')}
         />
 
-        <TextInput
+        <NumberInput
           label="Precio"
           placeholder="Precio"
+          formatter={currencyFormatter}
+          parser={currencyParser}
           {...form.getInputProps('price')}
         />
         <Group position="right" mt="md" spacing="md">

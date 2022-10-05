@@ -1,4 +1,5 @@
 import { Stack, Title, Text, Group } from '@mantine/core';
+import Head from 'next/head';
 
 export interface PageHeaderProps {
   title: string;
@@ -8,13 +9,18 @@ export interface PageHeaderProps {
 
 const PageHeader = ({ title, extra, children }: PageHeaderProps) => {
   return (
-    <Stack spacing={'lg'}>
-      <Group position={'apart'}>
-        <Title order={3}>{title}</Title>
-        {extra && <Group spacing={'sm'}>{extra}</Group>}
-      </Group>
-      {children}
-    </Stack>
+    <>
+      <Head>
+        <title>{title}</title>
+      </Head>
+      <Stack spacing={'lg'}>
+        <Group position={'apart'}>
+          <Title order={3}>{title}</Title>
+          {extra && <Group spacing={'sm'}>{extra}</Group>}
+        </Group>
+        {children}
+      </Stack>
+    </>
   );
 };
 
