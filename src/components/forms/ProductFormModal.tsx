@@ -45,7 +45,7 @@ const ProductFormModal: React.FunctionComponent<Props> = ({
 
   async function handleSubmit() {
     (product ? updateMutation : createMutation)({
-      id: product?.id,
+      id: product?.id ?? 0,
       name: form.values.name,
       barcode: form.values.barcode,
       price: form.values.price,
