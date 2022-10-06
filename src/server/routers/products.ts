@@ -43,37 +43,57 @@ export const productRouter = t.router({
     }),
   add: t.procedure.input(productCreateSchema).mutation(async ({ input }) => {
     // check if product with barcode already exists
-    const checkBarcode = await prisma.product.findUnique({
-      where: {
-        barcode: input.barcode,
-      },
+    return prisma.$transaction(async (prisma) => {
+      const checkBarcode = await prisma.product.findUnique({
+        where: {
+          barcode: input.barcode,
+        },
+      });
+
+      if (checkBarcode) {
+        throw new Error('Ya existe un producto con ese código de barras');
+      }
+
+      const product = await prisma.product.create({
+        data: { ...input, lastCost: 0 },
+      });
+
+      await prisma.log.create({
+        data: {
+          rowId: product.id,
+          table: 'product',
+          type: 'CREATE',
+        },
+      });
+
+      return product;
     });
-
-    if (checkBarcode) {
-      throw new Error('Ya existe un producto con ese código de barras');
-    }
-
-    const product = await prisma.product.create({
-      data: { ...input, lastCost: 0 },
-    });
-
-    return product;
   }),
   update: t.procedure.input(productUpdateSchema).mutation(async ({ input }) => {
     // check if product with barcode already exists
-    const checkBarcode = await prisma.product.findUnique({
-      where: { id: input.id },
+    return prisma.$transaction(async (prisma) => {
+      const checkBarcode = await prisma.product.findUnique({
+        where: { id: input.id },
+      });
+
+      if (checkBarcode && checkBarcode.id !== input.id) {
+        throw new Error('Ya existe un producto con ese código de barras');
+      }
+
+      const product = await prisma.product.update({
+        where: { id: input.id },
+        data: input,
+      });
+
+      await prisma.log.create({
+        data: {
+          rowId: product.id,
+          table: 'product',
+          type: 'UPDATE',
+        },
+      });
+
+      return product;
     });
-
-    if (checkBarcode && checkBarcode.id !== input.id) {
-      throw new Error('Ya existe un producto con ese código de barras');
-    }
-
-    const product = await prisma.product.update({
-      where: { id: input.id },
-      data: input,
-    });
-
-    return product;
   }),
 });

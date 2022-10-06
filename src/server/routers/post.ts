@@ -90,12 +90,14 @@ export const postRouter = t.router({
     )
     .mutation(async ({ input }) => {
       // fake longe running operation
-      await new Promise((r) => setTimeout(r, 2000));
+      return prisma.$transaction(async (prisma) => {
+        await new Promise((r) => setTimeout(r, 2000));
 
-      const post = await prisma.post.create({
-        data: input,
-        select: defaultPostSelect,
+        const post = await prisma.post.create({
+          data: input,
+          select: defaultPostSelect,
+        });
+        return post;
       });
-      return post;
     }),
 });

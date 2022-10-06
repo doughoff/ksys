@@ -7,6 +7,7 @@ import {
   IconTransferIn,
   IconX,
 } from '@tabler/icons';
+
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import React from 'react';
@@ -147,13 +148,9 @@ const ProductDetailPage: NextPageWithLayout = () => {
           </Tabs.Tab>
         </Tabs.List>
 
-        <Tabs.Panel value="Ventas">
-          <div>Panel de ventas</div>
-        </Tabs.Panel>
+        <Tabs.Panel value="Ventas">Panel de ventas</Tabs.Panel>
 
-        <Tabs.Panel value="Compras">
-          <div>Panel de compras</div>
-        </Tabs.Panel>
+        <Tabs.Panel value="Compras">Panel de compras</Tabs.Panel>
       </Tabs>
 
       <ProductFormModal
