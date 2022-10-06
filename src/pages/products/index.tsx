@@ -65,8 +65,8 @@ const ProductsPage: NextPageWithLayout = () => {
               <th>Cod. Barras</th>
               <th>Status</th>
               <th>Nombre</th>
-              <th>Precio</th>
-              <th>Stock</th>
+              <th style={{ textAlign: 'right' }}>Precio</th>
+              <th style={{ textAlign: 'right' }}>Stock</th>
               <th>Acciones</th>
             </tr>
           )}

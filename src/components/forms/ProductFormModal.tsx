@@ -56,6 +56,7 @@ const ProductFormModal: React.FunctionComponent<Props> = ({
           message: 'El producto ha sido guardado correctamente',
           color: 'green',
         });
+        form.reset();
         onClose();
       })
       .catch((err) => {
