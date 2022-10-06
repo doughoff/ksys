@@ -3,10 +3,12 @@ import { NextLink } from '@mantine/next';
 import { IconPlus, IconSearch } from '@tabler/icons';
 import Head from 'next/head';
 import React from 'react';
+import StatusBadge from '~/components/atoms/StatusBadge';
 import ProductFormModal from '~/components/forms/ProductFormModal';
 import PageHeader from '~/components/molecules/PageHeader';
 import PaginatedTable from '~/components/organisms/PaginatedTable/PaginatedTable';
 import { usePagination } from '~/hooks/usePagination';
+import { currencyFormatter } from '~/utils/formatters';
 import { trpc } from '~/utils/trpc';
 import { NextPageWithLayout } from '../_app';
 
@@ -61,6 +63,7 @@ const ProductsPage: NextPageWithLayout = () => {
             <tr>
               <th>Cod.</th>
               <th>Cod. Barras</th>
+              <th>Status</th>
               <th>Nombre</th>
               <th>Precio</th>
               <th>Stock</th>
@@ -70,10 +73,13 @@ const ProductsPage: NextPageWithLayout = () => {
           rows={(item) => (
             <tr key={item.id}>
               <td>{item.id}</td>
-              <td>{item.barcode}</td>
+              <td width={180}>{item.barcode}</td>
+              <td width={120}>{<StatusBadge status={item.status} />}</td>
               <td>{item.name}</td>
-              <td>{item.price}</td>
-              <td>{item.stock}</td>
+              <td style={{ textAlign: 'right' }}>
+                {currencyFormatter(item.price)}
+              </td>
+              <td style={{ textAlign: 'right' }}>x{item.stock}</td>
               <td width={120}>
                 <Button
                   variant="filled"
