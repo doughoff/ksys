@@ -33,74 +33,68 @@ const ProductsPage: NextPageWithLayout = () => {
   }, [text]);
 
   return (
-    <>
-      <Head>
-        <title>Productos</title>
-      </Head>
-
-      <PageHeader
-        title="Productos"
-        extra={[
-          <Button
-            key="add_product"
-            variant="filled"
-            onClick={() => setAddProductModalOpen(true)}
-            leftIcon={<IconPlus />}
-          >
-            Adicionar Producto
-          </Button>,
-        ]}
-      >
-        <TextInput
-          label="Buscar"
-          icon={<IconSearch />}
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
-        <PaginatedTable
-          items={data?.items ?? []}
-          header={() => (
-            <tr>
-              <th>Cod.</th>
-              <th>Cod. Barras</th>
-              <th>Status</th>
-              <th>Nombre</th>
-              <th style={{ textAlign: 'right' }}>Precio</th>
-              <th style={{ textAlign: 'right' }}>Stock</th>
-              <th>Acciones</th>
-            </tr>
-          )}
-          rows={(item) => (
-            <tr key={item.id}>
-              <td>{item.id}</td>
-              <td width={180}>{item.barcode}</td>
-              <td width={120}>{<StatusBadge status={item.status} />}</td>
-              <td>{item.name}</td>
-              <td style={{ textAlign: 'right' }}>
-                {currencyFormatter(item.price)}
-              </td>
-              <td style={{ textAlign: 'right' }}>x{item.stock}</td>
-              <td width={120}>
-                <Button
-                  variant="filled"
-                  color="blue"
-                  component={NextLink}
-                  href={`/products/${item.id}`}
-                >
-                  Detalles
-                </Button>
-              </td>
-            </tr>
-          )}
-          pagination={pagination}
-        />
-      </PageHeader>
+    <PageHeader
+      title="Productos"
+      extra={[
+        <Button
+          key="add_product"
+          variant="filled"
+          onClick={() => setAddProductModalOpen(true)}
+          leftIcon={<IconPlus />}
+        >
+          Adicionar Producto
+        </Button>,
+      ]}
+    >
+      <TextInput
+        label="Buscar"
+        icon={<IconSearch />}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+      />
+      <PaginatedTable
+        items={data?.items ?? []}
+        header={() => (
+          <tr>
+            <th>Cod.</th>
+            <th>Cod. Barras</th>
+            <th>Status</th>
+            <th>Nombre</th>
+            <th style={{ textAlign: 'right' }}>Precio</th>
+            <th style={{ textAlign: 'right' }}>Stock</th>
+            <th>Acciones</th>
+          </tr>
+        )}
+        rows={(item) => (
+          <tr key={item.id}>
+            <td>{item.id}</td>
+            <td width={180}>{item.barcode}</td>
+            <td width={120}>{<StatusBadge status={item.status} />}</td>
+            <td>{item.name}</td>
+            <td style={{ textAlign: 'right' }}>
+              {currencyFormatter(item.price)}
+            </td>
+            <td style={{ textAlign: 'right' }}>x{item.stock}</td>
+            <td width={120}>
+              <Button
+                variant="filled"
+                color="blue"
+                component={NextLink}
+                href={`/products/${item.id}`}
+              >
+                Detalles
+              </Button>
+            </td>
+          </tr>
+        )}
+        pagination={pagination}
+      />
 
       <ProductFormModal
         isOpen={addProductModalOpen}
         onClose={() => setAddProductModalOpen(false)}
       />
-    </>
+    </PageHeader>
   );
 };
 
