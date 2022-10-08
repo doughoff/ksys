@@ -34,6 +34,7 @@ const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
       </Head>
       <span>test</span>
       <span>test2</span>
+      <span>test3</span>
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
