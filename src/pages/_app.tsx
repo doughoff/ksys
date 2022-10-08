@@ -32,9 +32,6 @@ const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
           content="minimum-scale=1, initial-scale=1, width=device-width"
         />
       </Head>
-      <span>test</span>
-      <span>test2</span>
-      <span>test3</span>
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
