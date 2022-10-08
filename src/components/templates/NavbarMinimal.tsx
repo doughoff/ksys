@@ -8,9 +8,11 @@ import {
 import { NextLink } from '@mantine/next';
 import {
   IconActivity,
+  IconAirBalloon,
   IconBarcode,
   IconGauge,
   IconHome2,
+  IconTransferIn,
   IconUser,
   TablerIcon,
 } from '@tabler/icons';
@@ -86,8 +88,10 @@ const mockdata = [
   { icon: IconHome2, label: 'Página', href: '/', exactMatch: true },
   { icon: IconGauge, label: 'Dashboard', href: '/posts' },
   { icon: IconUser, label: 'Clientes', href: '/entities' },
-  { icon: IconActivity, label: 'Logs', href: '/logs' },
   { icon: IconBarcode, label: 'Produtos', href: '/products' },
+  { icon: IconTransferIn, label: 'Compras', href: '/stock_entries' },
+  { icon: IconAirBalloon, label: 'Bears', href: '/bears' },
+  { icon: IconActivity, label: 'Logs', href: '/logs' },
 ];
 
 export function NavbarMinimal() {

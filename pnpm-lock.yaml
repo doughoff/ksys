@@ -40,6 +40,7 @@ specifiers:
   typescript: ^4.8.4
   webpack: ^5.74.0
   zod: ^3.19.1
+  zustand: ^4.1.1
 
 dependencies:
   '@emotion/react': 11.10.4_bjroym7kxlcs2vvwnej4p3gzwu
@@ -63,6 +64,7 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   superjson: 1.10.0
   zod: 3.19.1
+  zustand: 4.1.1_react@18.2.0
 
 devDependencies:
   '@babel/core': 7.19.3
@@ -3970,4 +3972,20 @@ packages:
 
   /zod/3.19.1:
     resolution: {integrity: sha512-LYjZsEDhCdYET9ikFu6dVPGp2YH9DegXjdJToSzD9rO6fy4qiRYFoyEYwps88OseJlPyl2NOe2iJuhEhL7IpEA==}
+    dev: false
+
+  /zustand/4.1.1_react@18.2.0:
+    resolution: {integrity: sha512-h4F3WMqsZgvvaE0n3lThx4MM81Ls9xebjvrABNzf5+jb3/03YjNTSgZXeyrvXDArMeV9untvWXRw1tY+ntPYbA==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      immer: '>=9.0'
+      react: '>=16.8'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      react: 18.2.0
+      use-sync-external-store: 1.2.0_react@18.2.0
     dev: false

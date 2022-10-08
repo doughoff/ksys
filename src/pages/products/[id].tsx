@@ -111,12 +111,18 @@ const ProductDetailPage: NextPageWithLayout = () => {
       ]}
     >
       <Grid>
-        <Description label="Código de barras" data={product?.barcode} />
-        <Description label="Nombre" data={product?.name} />
+        <Description
+          label="Código de barras"
+          data={product?.barcode}
+          span={2}
+        />
+        <Description label="Nombre" data={product?.name} span={4} />
+        <Description label="IVA" data={product?.iva} span={1} />
         <Description
           label="Stock"
           data={product?.stock.toString()}
           align="right"
+          span={2}
         />
         <Description
           label="Precio"
@@ -153,11 +159,13 @@ const ProductDetailPage: NextPageWithLayout = () => {
         <Tabs.Panel value="Compras">Panel de compras</Tabs.Panel>
       </Tabs>
 
-      <ProductFormModal
-        isOpen={showEditForm}
-        onClose={() => setShowEditForm(false)}
-        product={product}
-      />
+      {showEditForm && (
+        <ProductFormModal
+          isOpen={showEditForm}
+          onClose={() => setShowEditForm(false)}
+          product={product}
+        />
+      )}
     </PageHeader>
   );
 };

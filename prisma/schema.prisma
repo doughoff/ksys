@@ -83,14 +83,18 @@ model StockEntry {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status    Status    @default(ACTIVE)
-  deletedAt DateTime? @map("deleted_at")
+  status    Status            @default(ACTIVE)
+  deletedAt DateTime?         @map("deleted_at")
+  items     StockEntryItems[]
 
   @@map("stock_entries")
 }
 
 model StockEntryItems {
   id Int @id @default(autoincrement())
+
+  stockEntryId Int
+  stockEntry   StockEntry @relation(fields: [stockEntryId], references: [id])
 
   productId Int     @map("product_id")
   product   Product @relation(fields: [productId], references: [id])
