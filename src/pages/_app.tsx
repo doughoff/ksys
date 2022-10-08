@@ -33,6 +33,7 @@ const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
         />
       </Head>
       <span>test</span>
+      <span>test2</span>
       <MantineProvider
         withGlobalStyles
         withNormalizeCSS
