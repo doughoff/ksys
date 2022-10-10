@@ -7,6 +7,7 @@ import { healthRouter } from './health';
 import { logRouter } from './logs';
 import { postRouter } from './post';
 import { productRouter } from './products';
+import { stockEntriesRouter } from './stockEntries';
 
 export const appRouter = t.router({
   post: postRouter,
@@ -14,6 +15,7 @@ export const appRouter = t.router({
   entity: entityRouter,
   log: logRouter,
   products: productRouter,
+  stockEntries: stockEntriesRouter,
 });
 
 export type AppRouter = typeof appRouter;

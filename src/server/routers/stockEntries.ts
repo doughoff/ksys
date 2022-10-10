@@ -3,7 +3,7 @@ import { paginationSchema, parsePagination } from '~/validators/common';
 import { prisma } from '../prisma';
 import { t } from '../trpc';
 
-const stockEntriesRouter = t.router({
+export const stockEntriesRouter = t.router({
   list: t.procedure
     .input(z.object({ pagination: paginationSchema }))
     .query(async ({ input }) => {
