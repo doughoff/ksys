@@ -1,7 +1,6 @@
 import { Button, TextInput } from '@mantine/core';
 import { NextLink } from '@mantine/next';
 import { IconPlus, IconSearch } from '@tabler/icons';
-import Head from 'next/head';
 import React from 'react';
 import StatusBadge from '~/components/atoms/StatusBadge';
 import ProductFormModal from '~/components/forms/ProductFormModal';

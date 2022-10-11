@@ -41,9 +41,17 @@ export const productRouter = t.router({
         where: { id: input.id },
       });
     }),
+  byBarcode: t.procedure
+    .input(z.object({ barcode: z.string() }))
+    .query(async ({ input }) => {
+      return prisma.product.findUnique({
+        where: { barcode: input.barcode },
+      });
+    }),
   add: t.procedure.input(productCreateSchema).mutation(async ({ input }) => {
     // check if product with barcode already exists
     return prisma.$transaction(async (prisma) => {
+      0;
       const checkBarcode = await prisma.product.findUnique({
         where: {
           barcode: input.barcode,
