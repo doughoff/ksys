@@ -318,9 +318,6 @@ const CreateEntryPage: NextPageWithLayout = () => {
           })),
         });
       },
-      onCancel: () => {
-        // do nothing
-      },
     });
   };
 
