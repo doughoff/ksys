@@ -8,6 +8,7 @@ import {
   Grid,
   NumberInput,
   Table,
+  Text,
   TextInput,
 } from '@mantine/core';
 import { useForm, zodResolver } from '@mantine/form';
@@ -18,6 +19,7 @@ import { showNotification } from '@mantine/notifications';
 import create from 'zustand';
 import { currencyFormatter, currencyParser } from '~/utils/formatters';
 import { IconCheck, IconTrash, IconX } from '@tabler/icons';
+import { openConfirmModal } from '@mantine/modals';
 
 interface NewStockEntryState {
   items: {
@@ -295,6 +297,33 @@ const CreateEntryPage: NextPageWithLayout = () => {
     },
   });
 
+  const handleSubmit = async () => {
+    openConfirmModal({
+      title: 'Confirmar',
+      children: (
+        <Text size={'sm'}>
+          ¿Está seguro que desea crear la entrada de stock?
+        </Text>
+      ),
+      labels: {
+        confirm: 'Crear',
+        cancel: 'Cancelar',
+      },
+      onConfirm: () => {
+        createEntry({
+          items: items.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            cost: item.cost,
+          })),
+        });
+      },
+      onCancel: () => {
+        // do nothing
+      },
+    });
+  };
+
   return (
     <PageHeader
       title="Nueva Entrada de Stock"
@@ -317,15 +346,7 @@ const CreateEntryPage: NextPageWithLayout = () => {
           color="green"
           disabled={items.length === 0}
           leftIcon={<IconCheck />}
-          onClick={() => {
-            createEntry({
-              items: items.map((item) => ({
-                productId: item.productId,
-                quantity: item.quantity,
-                cost: item.cost,
-              })),
-            });
-          }}
+          onClick={handleSubmit}
         >
           Guardar
         </Button>,

@@ -50,7 +50,9 @@ const StockEntriesPage: NextPageWithLayout = () => {
         rows={(item) => (
           <tr key={item.id}>
             <td width={100}>{item.id}</td>
-            <td width={100}>{dayjs(item.createdAt).format('DD/MM/YYYY')}</td>
+            <td width={180}>
+              {dayjs(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}
+            </td>
             <td>
               <StatusBadge status={item.status} />
             </td>

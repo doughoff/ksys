@@ -1,4 +1,5 @@
 import { MantineProvider } from '@mantine/core';
+import { ModalsProvider } from '@mantine/modals';
 import { NotificationsProvider } from '@mantine/notifications';
 import type { NextPage } from 'next';
 import type { AppType, AppProps } from 'next/app';
@@ -37,9 +38,11 @@ const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
         withNormalizeCSS
         theme={{ colorScheme: 'dark' }}
       >
-        <NotificationsProvider position="top-right">
-          {getLayout(<Component {...pageProps} />)}
-        </NotificationsProvider>
+        <ModalsProvider>
+          <NotificationsProvider position="top-right">
+            {getLayout(<Component {...pageProps} />)}
+          </NotificationsProvider>
+        </ModalsProvider>
       </MantineProvider>
     </>
   );
