@@ -33,6 +33,7 @@ interface NewStockEntryState {
     product: Product;
   }) => void;
   removeItem: (index: number) => void;
+  clearItems: () => void;
 }
 
 const useNewStockEntry = create<NewStockEntryState>()(
@@ -76,6 +77,7 @@ const useNewStockEntry = create<NewStockEntryState>()(
         set((state) => ({
           items: state.items.filter((_, i) => i !== index),
         })),
+      clearItems: () => set({ items: [] }),
     })),
   ),
 );
@@ -273,18 +275,57 @@ const StockEntryList = () => {
 };
 
 const CreateEntryPage: NextPageWithLayout = () => {
+  const { items, clearItems } = useNewStockEntry();
+
+  const { mutateAsync: createEntry } = trpc.stockEntries.create.useMutation({
+    onSuccess: () => {
+      clearItems();
+      showNotification({
+        title: 'Success',
+        message: 'Entrada creada',
+        color: 'green',
+      });
+    },
+    onError: (err) => {
+      showNotification({
+        title: 'Error',
+        message: err.message,
+        color: 'red',
+      });
+    },
+  });
+
   return (
     <PageHeader
       title="Nueva Entrada de Stock"
       extra={[
-        <Button key="cancel" variant="filled" color="red" leftIcon={<IconX />}>
+        <Button
+          key="cancel"
+          variant="filled"
+          color="red"
+          leftIcon={<IconX />}
+          disabled={items.length === 0}
+          onClick={() => {
+            clearItems();
+          }}
+        >
           Cancelar
         </Button>,
         <Button
           key="save"
           variant="filled"
           color="green"
+          disabled={items.length === 0}
           leftIcon={<IconCheck />}
+          onClick={() => {
+            createEntry({
+              items: items.map((item) => ({
+                productId: item.productId,
+                quantity: item.quantity,
+                cost: item.cost,
+              })),
+            });
+          }}
         >
           Guardar
         </Button>,
