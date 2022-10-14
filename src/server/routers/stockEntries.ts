@@ -154,7 +154,8 @@ export const stockEntriesRouter = t.router({
         );
 
         // Update stock entry status to deleted
-        await prisma.stockEntry.update({
+
+        const updatedEntry = await prisma.stockEntry.update({
           where: { id: input.id },
           data: {
             status: 'DELETED',
@@ -168,7 +169,7 @@ export const stockEntriesRouter = t.router({
             type: 'UPDATE',
             table: 'stockEntry',
             rowId: entry.id,
-            data: JSON.stringify(entry),
+            data: JSON.stringify(updatedEntry),
           },
         });
 

@@ -86,11 +86,9 @@ function NavbarLink({
 
 const mockdata = [
   { icon: IconHome2, label: 'Página', href: '/', exactMatch: true },
-  { icon: IconGauge, label: 'Dashboard', href: '/posts' },
   { icon: IconUser, label: 'Clientes', href: '/entities' },
   { icon: IconBarcode, label: 'Produtos', href: '/products' },
   { icon: IconTransferIn, label: 'Compras', href: '/stock_entries' },
-  { icon: IconAirBalloon, label: 'Bears', href: '/bears' },
   { icon: IconActivity, label: 'Logs', href: '/logs' },
 ];
 

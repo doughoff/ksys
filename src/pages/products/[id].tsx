@@ -138,9 +138,17 @@ const ProductDetailPage: NextPageWithLayout = () => {
           }
           span={6}
         />
+
         <Description
           label="Creación"
+          span={3}
           data={dayjs(product.createdAt).format('DD/MM/YYYY')}
+        />
+        <Description
+          span={3}
+          label="Ultimo Costo"
+          data={currencyFormatter(product?.lastCost)}
+          align="right"
         />
       </Grid>
 
