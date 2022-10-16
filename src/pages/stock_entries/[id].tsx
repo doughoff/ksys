@@ -6,6 +6,7 @@ import { IconX, IconCheck } from '@tabler/icons';
 import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import { Description } from '~/components/atoms/Description';
+import StatusBadge from '~/components/atoms/StatusBadge';
 import PageHeader from '~/components/molecules/PageHeader';
 import { currencyFormatter } from '~/utils/formatters';
 import { trpc } from '~/utils/trpc';
@@ -44,6 +45,7 @@ const StockEntryDetailsPage: NextPageWithLayout = () => {
   return (
     <PageHeader
       title={`Entrada de Stock ${stockEntry?.id}`}
+      tags={<StatusBadge status={stockEntry?.status ?? 'ACTIVE'} />}
       extra={[
         stockEntry?.status === 'ACTIVE' ? (
           <Button

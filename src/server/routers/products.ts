@@ -14,9 +14,9 @@ export const productRouter = t.router({
     const pagination = parsePagination(input.pagination);
     const filter = Prisma.validator<Prisma.ProductWhereInput>()({
       OR: [
-        { name: { contains: input.text } },
-        { description: { contains: input.text } },
-        { barcode: { contains: input.text } },
+        { name: { contains: input.text, mode: 'insensitive' } },
+        { description: { contains: input.text, mode: 'insensitive' } },
+        { barcode: { contains: input.text, mode: 'insensitive' } },
       ],
     });
 
@@ -28,6 +28,9 @@ export const productRouter = t.router({
         createdAt: 'asc',
       },
     });
+
+    // fake logn running query
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     return {
       items: items,

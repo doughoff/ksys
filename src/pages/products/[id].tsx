@@ -12,6 +12,7 @@ import dayjs from 'dayjs';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { Description } from '~/components/atoms/Description';
+import StatusBadge from '~/components/atoms/StatusBadge';
 import ProductFormModal from '~/components/forms/ProductFormModal';
 import PageHeader from '~/components/molecules/PageHeader';
 import { currencyFormatter } from '~/utils/formatters';
@@ -40,6 +41,7 @@ const ProductDetailPage: NextPageWithLayout = () => {
   return (
     <PageHeader
       title={`${product.id} - ${product.name}`}
+      tags={<StatusBadge status={product.status} />}
       extra={[
         product.status === 'ACTIVE' ? (
           <Button

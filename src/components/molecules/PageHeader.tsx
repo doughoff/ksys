@@ -1,21 +1,25 @@
-import { Stack, Title, Text, Group } from '@mantine/core';
+import { Stack, Title, Group } from '@mantine/core';
 import Head from 'next/head';
 
 export interface PageHeaderProps {
   title: string;
   extra?: React.ReactNode[];
+  tags?: React.ReactNode;
   children?: React.ReactNode;
 }
 
-const PageHeader = ({ title, extra, children }: PageHeaderProps) => {
+const PageHeader = ({ title, tags, extra, children }: PageHeaderProps) => {
   return (
     <>
       <Head>
         <title>{title}</title>
       </Head>
       <Stack spacing={'lg'}>
-        <Group position={'apart'}>
-          <Title order={3}>{title}</Title>
+        <Group position={'apart'} spacing={'sm'}>
+          <Group>
+            <Title order={3}>{title}</Title>
+            {tags && <div>{tags}</div>}
+          </Group>
           {extra && <Group spacing={'sm'}>{extra}</Group>}
         </Group>
         {children}
