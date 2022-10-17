@@ -1,4 +1,10 @@
-import { Modal, TextInput } from '@mantine/core';
+import {
+  Box,
+  LoadingOverlay,
+  Modal,
+  ModalProps,
+  TextInput,
+} from '@mantine/core';
 import { IconSearch } from '@tabler/icons';
 import React from 'react';
 import create from 'zustand';
@@ -53,10 +59,19 @@ export const useModalListSelectionStore = create<
 export interface ModalListSelectionProps<T> {
   isOpen: boolean;
   items: T[];
+  isLoading: boolean;
+  title?: string;
+  size: ModalProps['size'];
   onClose: () => void;
   onSelect: (item: T) => void;
-  renderItem: (item: T) => React.ReactNode;
+  renderItems: (
+    items: T[],
+    selected: number,
+    setSelectedIndex: (id: number | null) => void,
+  ) => React.ReactNode;
   onSearch?: (value: string) => void;
+  noResults?: React.ReactNode;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void | undefined;
 }
 
 export default function ModalListSelection<T>({
@@ -64,8 +79,13 @@ export default function ModalListSelection<T>({
   items,
   onClose,
   onSelect,
-  renderItem,
+  renderItems,
   onSearch,
+  size = 'md',
+  title,
+  isLoading,
+  noResults,
+  onKeyDown,
 }: ModalListSelectionProps<T>) {
   const {
     searchValue,
@@ -115,7 +135,6 @@ export default function ModalListSelection<T>({
   }, [isOpen, setIsOpen]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    console.log(e.key);
     switch (e.key) {
       case 'ArrowUp':
         e.preventDefault();
@@ -132,7 +151,7 @@ export default function ModalListSelection<T>({
           const selected = items[selectedIndex ?? -1];
           if (selected) {
             onSelect(selected);
-            setIsOpen(false);
+            onClose();
           }
         }
         break;
@@ -142,15 +161,22 @@ export default function ModalListSelection<T>({
         setIsOpen(false);
         break;
     }
+
+    if (onKeyDown) {
+      onKeyDown(e);
+    }
   };
 
   return (
     <Modal
+      title={title}
       opened={isOpen}
       onClose={() => {
         setIsOpen(false);
         onClose();
       }}
+      size={size}
+      onKeyDown={handleKeyDown}
     >
       <div
         className={styles.modalContent}
@@ -160,25 +186,52 @@ export default function ModalListSelection<T>({
       >
         <TextInput
           ref={searchInputRef}
-          label="Buscar"
           icon={<IconSearch />}
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
-          onKeyDown={handleKeyDown}
+          onKeyDown={(e) => {
+            if (e.key === 'ArrowUp') {
+              e.preventDefault();
+            } else if (e.key === 'ArrowDown') {
+              e.preventDefault();
+            }
+          }}
         />
-        <ul className={styles.list}>
-          {items.map((item, index) => (
-            <li
-              key={index}
-              className={index === selectedIndex ? styles.selected : ''}
-              onClick={() => {
-                setSelectedIndex(index);
+
+        <Box
+          style={{
+            minHeight: '300px',
+            width: '100%',
+            marginTop: '10px',
+          }}
+        >
+          {isLoading && <LoadingOverlay visible={isLoading} />}
+          {renderItems(items, selectedIndex ?? -1, setSelectedIndex)}
+          {searchValue.length === 0 && (
+            <div
+              style={{
+                textAlign: 'center',
+                marginTop: '10px',
+                color: 'gray',
+                fontSize: '18px',
               }}
             >
-              {renderItem(item)}
-            </li>
-          ))}
-        </ul>
+              Tipea para buscar
+            </div>
+          )}
+          {searchValue.length > 0 && items.length === 0 && (
+            <div
+              style={{
+                textAlign: 'center',
+                marginTop: '10px',
+                color: 'gray',
+                fontSize: '18px',
+              }}
+            >
+              {noResults ?? 'No hay resultados'}
+            </div>
+          )}
+        </Box>
       </div>
     </Modal>
   );
