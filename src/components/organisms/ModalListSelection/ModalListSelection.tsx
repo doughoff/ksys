@@ -186,6 +186,8 @@ export default function ModalListSelection<T>({
       >
         <TextInput
           ref={searchInputRef}
+          placeholder="Tipea para buscar..."
+          autoComplete="off"
           icon={<IconSearch />}
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}

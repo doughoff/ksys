@@ -23,11 +23,11 @@ const NewSalePage: NextPageWithLayout = () => {
       ]}
     >
       <div>Search Modal: {showSearchModal ? 'true' : 'false'}</div>
-      <SelectEntityModal
+      <SelectProductModal
         isOpen={showSearchModal}
         onClose={() => setShowSearchModal(false)}
-        onSelect={(entity) => {
-          console.log(entity);
+        onSelect={(product) => {
+          console.log(product);
         }}
       />
     </PageHeader>
