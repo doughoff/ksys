@@ -14,7 +14,12 @@ const PageHeader = ({ title, tags, extra, children }: PageHeaderProps) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <Stack spacing={'lg'}>
+      <Stack
+        spacing={'lg'}
+        style={{
+          height: '100%',
+        }}
+      >
         <Group position={'apart'} spacing={'sm'}>
           <Group>
             <Title order={3}>{title}</Title>
