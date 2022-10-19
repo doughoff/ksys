@@ -19,6 +19,7 @@ import create from 'zustand';
 import { persist } from 'zustand/middleware';
 import { currencyFormatter, currencyParser } from '~/utils/formatters';
 import { trpc } from '~/utils/trpc';
+import { showNotification } from '@mantine/notifications';
 
 interface SaleItem {
   productId: number;
@@ -65,7 +66,7 @@ const useAddItemForm = create<AddItemFormState>()(
       })),
     setQuantity: (quantity) => set({ quantity }),
     setPrice: (cost) => set({ price: cost }),
-    setBarcode: (barcode) => set({ barcode }),
+    setBarcode: (barcode) => set({ barcode, product: undefined, price: 0 }),
     setProduct: (product) =>
       set({
         product,
@@ -153,6 +154,7 @@ const AddItemForm: React.FC = () => {
     setProduct,
     editPriceMode,
     addItem,
+    pushItem,
   } = useAddItemForm();
 
   const priceInputRef = React.useRef<HTMLInputElement>(null);
@@ -177,7 +179,15 @@ const AddItemForm: React.FC = () => {
         } else {
           setProduct(data);
           // focus on priceInput
-          setFocusOnPrice(true);
+          if (data) {
+            setFocusOnPrice(true);
+          } else if (barcode.length > 0) {
+            showNotification({
+              title: 'Producto no encontrado',
+              message: 'El producto no existe en la base de datos',
+              color: 'red',
+            });
+          }
         }
         setSearchByBarcode(false);
       },
@@ -248,8 +258,12 @@ const AddItemForm: React.FC = () => {
           width={'100%'}
           value={price}
           onChange={(value) => {
-            console.log('onChange', value);
             setPrice(value ?? 0);
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              pushItem();
+            }
           }}
           disabled={!editPriceMode}
         />
@@ -263,6 +277,9 @@ const AddItemForm: React.FC = () => {
           rightIcon={<IconPlus />}
           fullWidth
           disabled={!product}
+          onClick={() => {
+            pushItem();
+          }}
         >
           Adicionar
         </Button>
