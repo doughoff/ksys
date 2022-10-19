@@ -6,9 +6,16 @@ export interface PageHeaderProps {
   extra?: React.ReactNode[];
   tags?: React.ReactNode;
   children?: React.ReactNode;
+  onKeyDown?: (event: React.KeyboardEvent<HTMLDivElement>) => void;
 }
 
-const PageHeader = ({ title, tags, extra, children }: PageHeaderProps) => {
+const PageHeader = ({
+  title,
+  tags,
+  extra,
+  children,
+  onKeyDown,
+}: PageHeaderProps) => {
   return (
     <>
       <Head>
@@ -18,6 +25,11 @@ const PageHeader = ({ title, tags, extra, children }: PageHeaderProps) => {
         spacing={'lg'}
         style={{
           height: '100%',
+        }}
+        onKeyDown={(event) => {
+          if (onKeyDown) {
+            onKeyDown(event);
+          }
         }}
       >
         <Group position={'apart'} spacing={'sm'}>
