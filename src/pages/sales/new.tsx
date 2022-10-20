@@ -310,6 +310,20 @@ const NewSalePage: NextPageWithLayout = () => {
     [incrementQuantity, decrementQuantity, setEditPriceMode, editPriceMode],
   );
 
+  React.useEffect(() => {
+    function handleKeyDown(e: globalThis.KeyboardEvent) {
+      if (hotKeys[e.key]) {
+        hotKeys[e.key]?.();
+        e.preventDefault();
+      }
+    }
+
+    document.body.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [hotKeys]);
+
   return (
     <PageHeader
       title="Venta"
@@ -324,14 +338,6 @@ const NewSalePage: NextPageWithLayout = () => {
           Buscar
         </Button>,
       ]}
-      onKeyDown={(e) => {
-        console.log(e.key);
-        const handler = hotKeys[e.key];
-        if (handler) {
-          e.preventDefault();
-          handler();
-        }
-      }}
     >
       <div
         style={{
