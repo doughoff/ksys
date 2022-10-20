@@ -290,9 +290,9 @@ const CreateEntryPage: NextPageWithLayout = () => {
     },
     onError: (err) => {
       showNotification({
+        color: 'red',
         title: 'Error',
         message: err.message,
-        color: 'red',
       });
     },
   });

@@ -233,7 +233,7 @@ const AddItemForm: React.FC = () => {
       <Grid.Col span={3}>
         <TextInput
           label="Producto"
-          width={'100%'}
+          style={{ width: '100%' }}
           disabled
           value={isInitialLoading ? 'Cargando...' : product?.name ?? ''}
         />
@@ -242,7 +242,6 @@ const AddItemForm: React.FC = () => {
       <Grid.Col span={2}>
         <NumberInput
           label="Cantidad"
-          width={'100%'}
           value={quantity}
           onChange={(value) => {
             setQuantity(value ?? 1);
@@ -255,7 +254,7 @@ const AddItemForm: React.FC = () => {
         <NumberInput
           ref={priceInputRef}
           label="Precio"
-          width={'100%'}
+          style={{ width: '100%' }}
           value={price}
           onChange={(value) => {
             setPrice(value ?? 0);
