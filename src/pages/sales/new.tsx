@@ -76,19 +76,18 @@ const useAddItemForm = create<AddItemFormState>()(
     setEditPriceMode: (editPriceMode) => set({ editPriceMode }),
     addItem: (item) =>
       set((prev) => {
-        const existingItem = prev.saleItems.find(
+        const existingItemIndex = prev.saleItems.findIndex(
           (i) => i.productId === item.productId,
         );
 
-        let saleItemsCopy = [...prev.saleItems];
+        const saleItemsCopy = [...prev.saleItems];
 
-        if (existingItem && existingItem.price === item.price) {
-          saleItemsCopy = prev.saleItems.map((i) => {
-            if (i.productId === item.productId && i.price === item.price) {
-              return { ...i, quantity: i.quantity + item.quantity };
-            }
-            return i;
-          });
+        if (existingItemIndex !== -1) {
+          const alreadyExistingItem = saleItemsCopy[existingItemIndex];
+          if (alreadyExistingItem) {
+            alreadyExistingItem.quantity += item.quantity;
+            saleItemsCopy[existingItemIndex] = alreadyExistingItem;
+          }
         } else {
           saleItemsCopy.unshift(item);
         }
@@ -204,10 +203,19 @@ const AddItemForm: React.FC = () => {
 
   // focus on barcodeInput
   React.useEffect(() => {
-    if (barcodeInputRef.current) {
+    if (barcodeInputRef.current && !product) {
       barcodeInputRef.current.focus();
     }
-  }, []);
+
+    // create a loop that focus on barcodeInputRef every 1 second
+    const interval = setInterval(() => {
+      if (barcodeInputRef.current && !product) {
+        barcodeInputRef.current.focus();
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [product]);
 
   return (
     <Grid
