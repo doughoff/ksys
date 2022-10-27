@@ -1,16 +1,19 @@
 import {
   Button,
+  Text,
   CloseButton,
   Grid,
   Group,
+  Modal,
   NumberInput,
+  Radio,
   Stack,
   Switch,
   Table,
   TextInput,
 } from '@mantine/core';
-import { Product } from '@prisma/client';
-import { IconPlus, IconSearch, IconTrash } from '@tabler/icons';
+import { Entity, Product, SaleType } from '@prisma/client';
+import { IconCheck, IconPlus, IconSearch, IconTrash } from '@tabler/icons';
 import React, { KeyboardEvent } from 'react';
 import PageHeader from '~/components/molecules/PageHeader';
 import { SelectEntityModal, SelectProductModal } from '~/components/organisms';
@@ -34,10 +37,10 @@ interface AddItemFormState {
   price: number;
 
   product?: Product | null;
-
   editPriceMode: boolean;
-
   saleItems: SaleItem[];
+
+  shouldFocusBarcode: boolean;
 
   incrementQuantity: () => void;
   decrementQuantity: () => void;
@@ -50,6 +53,7 @@ interface AddItemFormState {
   removeItem: (index: number) => void;
   clearItems: () => void;
   pushItem: () => void;
+  setShouldFocusBarcode: (shouldFocusBarcode: boolean) => void;
 }
 
 const useAddItemForm = create<AddItemFormState>()(
@@ -138,6 +142,8 @@ const useAddItemForm = create<AddItemFormState>()(
         }
         return prev;
       }),
+    shouldFocusBarcode: true,
+    setShouldFocusBarcode: (shouldFocusBarcode) => set({ shouldFocusBarcode }),
   })),
 );
 
@@ -154,6 +160,8 @@ const AddItemForm: React.FC = () => {
     editPriceMode,
     addItem,
     pushItem,
+    shouldFocusBarcode,
+    setShouldFocusBarcode,
   } = useAddItemForm();
 
   const priceInputRef = React.useRef<HTMLInputElement>(null);
@@ -206,16 +214,15 @@ const AddItemForm: React.FC = () => {
     if (barcodeInputRef.current && !product) {
       barcodeInputRef.current.focus();
     }
-
-    // create a loop that focus on barcodeInputRef every 1 second
-    const interval = setInterval(() => {
-      if (barcodeInputRef.current && !product) {
-        barcodeInputRef.current.focus();
-      }
-    }, 2000);
-
-    return () => clearInterval(interval);
   }, [product]);
+
+  // focus on barcodeInput
+  React.useEffect(() => {
+    if (barcodeInputRef.current && shouldFocusBarcode) {
+      barcodeInputRef.current.focus();
+      setShouldFocusBarcode(false);
+    }
+  }, [setShouldFocusBarcode, shouldFocusBarcode]);
 
   return (
     <Grid
@@ -295,6 +302,114 @@ const AddItemForm: React.FC = () => {
   );
 };
 
+interface FinishSaleModalState {
+  isOpen: boolean;
+  saleType: 'CASH' | 'CREDIT';
+  entity: Entity | undefined;
+
+  setSaleType: (saleType: 'CASH' | 'CREDIT') => void;
+  setEntity: (entity: Entity | undefined) => void;
+  setIsOpen: (isOpen: boolean) => void;
+  clear: () => void;
+}
+
+const useFinishSaleModal = create<FinishSaleModalState>((set) => ({
+  isOpen: false,
+  saleType: 'CASH',
+  entity: undefined,
+  setSaleType: (saleType) => set({ saleType }),
+  setEntity: (entity) => set({ entity }),
+  setIsOpen: (isOpen) => set({ isOpen }),
+  clear: () => set({ saleType: 'CASH', entity: undefined }),
+}));
+
+const FinishSaleModal: React.FC = () => {
+  const { isOpen, saleType, entity, setSaleType, setEntity, setIsOpen, clear } =
+    useFinishSaleModal();
+  const [userSearch, setUserSearch] = React.useState('');
+
+  // get search client input ref
+  const searchClientInputRef = React.useRef<HTMLInputElement>(null);
+
+  // focus on search client input
+  React.useEffect(() => {
+    // timeout for modal animation
+    setTimeout(() => {
+      if (isOpen && searchClientInputRef.current) {
+        searchClientInputRef.current.focus();
+      }
+    }, 100);
+  }, [isOpen]);
+
+  return (
+    <Modal
+      title="Finalizar Venta"
+      opened={isOpen}
+      onClose={() => {
+        setIsOpen(false);
+      }}
+    >
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+
+          showNotification({
+            title: 'Venta Finalizada',
+            message: JSON.stringify({
+              entity,
+              saleType,
+            }),
+          });
+        }}
+      >
+        <Stack spacing={'lg'}>
+          <TextInput
+            ref={searchClientInputRef}
+            label="Identificación del Cliente"
+            placeholder='Ej: "Cédula" o "RUC"'
+            value={userSearch}
+            onChange={(e) => setUserSearch(e.currentTarget.value)}
+          />
+
+          <TextInput
+            label="Nombre del Cliente Selecionado"
+            value={entity?.name ?? 'Cliente Ocasional'}
+            disabled
+          />
+
+          <Radio.Group
+            name="saleType"
+            label="Tipo de Venta"
+            defaultValue={SaleType.CASH}
+            onChange={(value) => {
+              setSaleType(value as 'CASH' | 'CREDIT');
+            }}
+          >
+            <Radio label="Efectivo" value={SaleType.CASH} />
+            <Radio label="Crédito" value={SaleType.CREDIT} />
+          </Radio.Group>
+
+          <Button
+            type="submit"
+            color="blue"
+            rightIcon={<IconCheck />}
+            disabled={!entity && saleType === SaleType.CREDIT}
+            fullWidth
+          >
+            Finalizar Venta
+          </Button>
+          {/* display error message when entity is not selected and saleType is "credit" */}
+          {!entity && saleType === SaleType.CREDIT && (
+            <Text color="red">
+              Debe seleccionar un cliente para realizar una venta a crédito
+            </Text>
+          )}
+        </Stack>
+      </form>
+    </Modal>
+  );
+};
+
 const NewSalePage: NextPageWithLayout = () => {
   const [showSearchModal, setShowSearchModal] = React.useState(false);
   const {
@@ -307,6 +422,9 @@ const NewSalePage: NextPageWithLayout = () => {
     removeItem,
   } = useAddItemForm();
 
+  const { isOpen: finishModalOpen, setIsOpen: setFinishModalOpen } =
+    useFinishSaleModal();
+
   const hotKeys: Record<string, () => void> = React.useMemo(
     () => ({
       F2: () => setShowSearchModal(true),
@@ -314,13 +432,21 @@ const NewSalePage: NextPageWithLayout = () => {
       '-': () => decrementQuantity(),
       p: () => setEditPriceMode(!editPriceMode),
       P: () => setEditPriceMode(!editPriceMode),
+      f: () => setFinishModalOpen(true),
+      F: () => setFinishModalOpen(true),
     }),
-    [incrementQuantity, decrementQuantity, setEditPriceMode, editPriceMode],
+    [
+      incrementQuantity,
+      decrementQuantity,
+      setEditPriceMode,
+      editPriceMode,
+      setFinishModalOpen,
+    ],
   );
 
   React.useEffect(() => {
     function handleKeyDown(e: globalThis.KeyboardEvent) {
-      if (hotKeys[e.key]) {
+      if (!showSearchModal && !finishModalOpen && hotKeys[e.key]) {
         hotKeys[e.key]?.();
         e.preventDefault();
       }
@@ -330,7 +456,7 @@ const NewSalePage: NextPageWithLayout = () => {
     return () => {
       document.body.removeEventListener('keydown', handleKeyDown);
     };
-  }, [hotKeys]);
+  }, [hotKeys, showSearchModal, finishModalOpen]);
 
   return (
     <PageHeader
@@ -454,6 +580,7 @@ const NewSalePage: NextPageWithLayout = () => {
           setProduct(product);
         }}
       />
+      {finishModalOpen && <FinishSaleModal />}
     </PageHeader>
   );
 };
