@@ -326,7 +326,16 @@ const useFinishSaleModal = create<FinishSaleModalState>((set) => ({
 const FinishSaleModal: React.FC = () => {
   const { isOpen, saleType, entity, setSaleType, setEntity, setIsOpen, clear } =
     useFinishSaleModal();
-  const [userSearch, setUserSearch] = React.useState('');
+  const [userDocument, setUserDocument] = React.useState('');
+  const [openEntitySearch, setOpenEntitySearch] = React.useState(false);
+  const [shouldSearchEntity, setShouldSearchEntity] = React.useState(false);
+  const { refetch } = trpc.entity.byDocument.useQuery(userDocument, {
+    enabled: shouldSearchEntity,
+    onSuccess(data) {
+      setEntity(data ?? undefined);
+      setShouldSearchEntity(false);
+    },
+  });
 
   // get search client input ref
   const searchClientInputRef = React.useRef<HTMLInputElement>(null);
@@ -367,8 +376,20 @@ const FinishSaleModal: React.FC = () => {
             ref={searchClientInputRef}
             label="Identificación del Cliente"
             placeholder='Ej: "Cédula" o "RUC"'
-            value={userSearch}
-            onChange={(e) => setUserSearch(e.currentTarget.value)}
+            value={userDocument}
+            onChange={(e) => {
+              setUserDocument(e.currentTarget.value);
+              setEntity(undefined);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setShouldSearchEntity(true);
+                e.preventDefault();
+              } else if (e.key === 'F2') {
+                setOpenEntitySearch(true);
+                e.preventDefault();
+              }
+            }}
           />
 
           <TextInput
@@ -406,6 +427,18 @@ const FinishSaleModal: React.FC = () => {
           )}
         </Stack>
       </form>
+
+      <SelectEntityModal
+        isOpen={openEntitySearch}
+        onClose={() => {
+          setOpenEntitySearch(false);
+        }}
+        onSelect={(entity) => {
+          setEntity(entity);
+          setUserDocument(entity.document ?? '');
+          setOpenEntitySearch(false);
+        }}
+      />
     </Modal>
   );
 };
@@ -425,6 +458,21 @@ const NewSalePage: NextPageWithLayout = () => {
   const { isOpen: finishModalOpen, setIsOpen: setFinishModalOpen } =
     useFinishSaleModal();
 
+  const handleFinishSale = React.useMemo(
+    () => () => {
+      if (saleItems.length > 0) {
+        setFinishModalOpen(true);
+      } else {
+        showNotification({
+          title: 'No se puede finalizar la venta',
+          message: 'No hay productos en la venta',
+          color: 'red',
+        });
+      }
+    },
+    [saleItems, setFinishModalOpen],
+  );
+
   const hotKeys: Record<string, () => void> = React.useMemo(
     () => ({
       F2: () => setShowSearchModal(true),
@@ -432,15 +480,15 @@ const NewSalePage: NextPageWithLayout = () => {
       '-': () => decrementQuantity(),
       p: () => setEditPriceMode(!editPriceMode),
       P: () => setEditPriceMode(!editPriceMode),
-      f: () => setFinishModalOpen(true),
-      F: () => setFinishModalOpen(true),
+      f: () => handleFinishSale(),
+      F: () => handleFinishSale(),
     }),
     [
       incrementQuantity,
       decrementQuantity,
       setEditPriceMode,
       editPriceMode,
-      setFinishModalOpen,
+      handleFinishSale,
     ],
   );
 

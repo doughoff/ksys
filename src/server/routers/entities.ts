@@ -34,6 +34,13 @@ export const entityRouter = t.router({
       count: count,
     };
   }),
+  byDocument: t.procedure.input(z.string()).query(async ({ input }) => {
+    return await prisma.entity.findUnique({
+      where: {
+        document: input,
+      },
+    });
+  }),
   byId: t.procedure
     .input(z.object({ id: z.number() }))
     .query(async ({ input }) => {
