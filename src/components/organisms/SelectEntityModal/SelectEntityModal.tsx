@@ -4,6 +4,7 @@ import { IconPlus } from '@tabler/icons';
 import { useQuery } from '@tanstack/react-query';
 import clsx from 'clsx';
 import React from 'react';
+import EntityFormModal from '~/components/forms/EntityFormModal';
 import { trpc } from '~/utils/trpc';
 import { ModalListSelection } from '../ModalListSelection';
 
@@ -21,6 +22,7 @@ export default function SelectEntityModal({
   onSelect,
 }: SelectEntityModalProps) {
   const [text, setText] = React.useState('');
+  const [createModal, setCreateModal] = React.useState(false);
   const { data, isInitialLoading } = trpc.entity.list.useQuery(
     {
       pagination: {
@@ -49,7 +51,15 @@ export default function SelectEntityModal({
         if (e.key === 'F5') {
           e.preventDefault();
           e.stopPropagation();
-          // TODO: Open Entity Creation FOrm
+          setCreateModal(true);
+        }
+
+        // close on escape and stops propagation
+        if (e.key === 'Escape') {
+          setText('');
+          onClose();
+          e.preventDefault();
+          e.stopPropagation();
         }
       }}
       renderItems={(items, selected, setSelectedIndex) => (
@@ -81,6 +91,11 @@ export default function SelectEntityModal({
               </tr>
             ))}
           </tbody>
+
+          <EntityFormModal
+            isOpen={createModal}
+            onClose={() => setCreateModal(false)}
+          />
         </Table>
       )}
       noResults={

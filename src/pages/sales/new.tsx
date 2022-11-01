@@ -169,6 +169,7 @@ const AddItemForm: React.FC = () => {
 
   const [focusOnPrice, setFocusOnPrice] = React.useState(false);
   const [searchByBarcode, setSearchByBarcode] = React.useState(false);
+
   const { isInitialLoading } = trpc.products.byBarcode.useQuery(
     { barcode },
     {
@@ -376,14 +377,22 @@ const FinishSaleModal: React.FC = () => {
             ref={searchClientInputRef}
             label="Identificación del Cliente"
             placeholder='Ej: "Cédula" o "RUC"'
-            value={userDocument}
+            value={
+              entity && !entity.document ? 'Sin Identificación' : userDocument
+            }
             onChange={(e) => {
-              setUserDocument(e.currentTarget.value);
-              setEntity(undefined);
+              if (entity) {
+                setEntity(undefined);
+                setUserDocument('');
+              } else {
+                setUserDocument(e.currentTarget.value);
+              }
             }}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
-                setShouldSearchEntity(true);
+                if (userDocument.length > 0) {
+                  setShouldSearchEntity(true);
+                }
                 e.preventDefault();
               } else if (e.key === 'F2') {
                 setOpenEntitySearch(true);

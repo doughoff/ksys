@@ -10,6 +10,7 @@ import {
 import { useForm, zodResolver } from '@mantine/form';
 import { showNotification } from '@mantine/notifications';
 import { Entity } from '@prisma/client';
+import React from 'react';
 import { currencyFormatter, currencyParser } from '~/utils/formatters';
 import { trpc } from '~/utils/trpc';
 import { documentTypeSchema, entityCreateSchema } from '~/validators/entity';
@@ -53,6 +54,19 @@ const EntityFormModal: React.FunctionComponent<Props> = ({
       },
     });
 
+  // get Name Input ref
+  const nameInputRef = React.useRef<HTMLInputElement>(null);
+
+  // focus Name Input on open
+  React.useEffect(() => {
+    // wait for animation
+    setTimeout(() => {
+      if (isOpen) {
+        nameInputRef.current?.focus();
+      }
+    }, 200);
+  }, [isOpen]);
+
   async function handleSubmit() {
     const documentType = documentTypeSchema
       .optional()
@@ -94,10 +108,22 @@ const EntityFormModal: React.FunctionComponent<Props> = ({
       onClose={onClose}
       transition="slide-down"
       size="md"
+      onKeyDown={(e) => {
+        // close on escape and stops propagation
+        if (e.key === 'Escape') {
+          onClose();
+          e.preventDefault();
+          e.stopPropagation();
+        }
+      }}
     >
       <form onSubmit={form.onSubmit(handleSubmit)}>
         <Stack spacing={'sm'}>
-          <TextInput label="Nombre" {...form.getInputProps('name')} />
+          <TextInput
+            ref={nameInputRef}
+            label="Nombre"
+            {...form.getInputProps('name')}
+          />
           <TextInput
             label="Documento"
             {...form.getInputProps('document')}

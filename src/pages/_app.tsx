@@ -5,6 +5,7 @@ import type { NextPage } from 'next';
 import type { AppType, AppProps } from 'next/app';
 import Head from 'next/head';
 import type { ReactElement, ReactNode } from 'react';
+import React from 'react';
 import { DefaultLayout } from '~/components/templates/DefaultLayout';
 import { trpc } from '~/utils/trpc';
 import '../styles/global.css';
@@ -23,6 +24,22 @@ type AppPropsWithLayout = AppProps & {
 const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout =
     Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
+
+  // prevent default from events like F5
+  const preventDefault = (e: KeyboardEvent) => {
+    const keysToPrevent = ['F2', 'F5'];
+    if (keysToPrevent.includes(e.key)) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
+  React.useEffect(() => {
+    window.addEventListener('keydown', preventDefault);
+    return () => {
+      window.removeEventListener('keydown', preventDefault);
+    };
+  }, []);
 
   return (
     <>

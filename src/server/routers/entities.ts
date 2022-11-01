@@ -14,7 +14,12 @@ export const entityRouter = t.router({
     const pagination = parsePagination(input.pagination);
     const filter = Prisma.validator<Prisma.EntityWhereInput>()({
       OR: [
-        { name: { contains: input.text } },
+        {
+          name: {
+            contains: input.text,
+            mode: 'insensitive',
+          },
+        },
         { cellphone: { contains: input.text } },
         { document: { contains: input.text } },
       ],

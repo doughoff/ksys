@@ -37,6 +37,10 @@ export const useModalListSelectionStore = create<
   setItems: (items) => set({ items }),
   arrowUpHandler: () => {
     set((prev) => {
+      if (prev.items.length === 0) {
+        return { selectedIndex: null };
+      }
+
       if (prev.selectedIndex === null || prev.selectedIndex === 0) {
         return { ...prev, selectedIndex: prev.items.length - 1 };
       }
@@ -45,6 +49,10 @@ export const useModalListSelectionStore = create<
   },
   arrowDownHandler: () => {
     set((prev) => {
+      if (prev.items.length === 0) {
+        return { selectedIndex: null };
+      }
+
       if (
         prev.selectedIndex === null ||
         prev.selectedIndex === prev.items.length - 1
@@ -114,7 +122,13 @@ export default function ModalListSelection<T>({
         searchInputRef.current?.focus();
       }, 300);
     }
-  }, [isOpen]);
+    console.log('isOpen', isOpen);
+    // reset search value and selected index
+    if (!isOpen) {
+      setSearchValue('');
+      setSelectedIndex(null);
+    }
+  }, [isOpen, setSearchValue, setSelectedIndex]);
 
   // debounce SearchValue and call onSearch
   React.useEffect(() => {
