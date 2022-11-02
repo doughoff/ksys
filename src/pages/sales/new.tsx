@@ -348,7 +348,7 @@ const FinishSaleModal: React.FC = () => {
       if (isOpen && searchClientInputRef.current) {
         searchClientInputRef.current.focus();
       }
-    }, 100);
+    }, 300);
   }, [isOpen]);
 
   return (
@@ -637,7 +637,7 @@ const NewSalePage: NextPageWithLayout = () => {
           setProduct(product);
         }}
       />
-      {finishModalOpen && <FinishSaleModal />}
+      <FinishSaleModal />
     </PageHeader>
   );
 };
