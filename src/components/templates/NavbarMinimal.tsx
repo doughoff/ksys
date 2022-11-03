@@ -12,6 +12,7 @@ import {
   IconBarcode,
   IconGauge,
   IconHome2,
+  IconSearch,
   IconShoppingCart,
   IconTransferIn,
   IconUser,
@@ -91,6 +92,7 @@ const mockdata = [
   { icon: IconBarcode, label: 'Produtos', href: '/products' },
   { icon: IconTransferIn, label: 'Compras', href: '/stock_entries' },
   { icon: IconShoppingCart, label: 'Pantalla de Venta', href: '/sales/new' },
+  { icon: IconSearch, label: 'Ventas', href: '/sales', exactMatch: true },
   { icon: IconActivity, label: 'Logs', href: '/logs' },
 ];
 

@@ -120,8 +120,8 @@ model Sale {
 
   type SaleType @default(CASH)
 
-  entityId Int    @map("entity_id")
-  entity   Entity @relation(fields: [entityId], references: [id])
+  entityId Int?    @map("entity_id")
+  entity   Entity? @relation(fields: [entityId], references: [id])
 
   printNumber String? @unique @map("print_number")
   document    String?

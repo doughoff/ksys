@@ -24,11 +24,31 @@ import { currencyFormatter, currencyParser } from '~/utils/formatters';
 import { trpc } from '~/utils/trpc';
 import { showNotification } from '@mantine/notifications';
 
+export enum IvaEnum {
+  IVA_0 = 'IVA_0',
+  IVA_5 = 'IVA_5',
+  IVA_10 = 'IVA_10',
+}
+
+function parseIva(iva: string): IvaEnum {
+  switch (iva) {
+    case 'IVA_0':
+      return IvaEnum.IVA_0;
+    case 'IVA_5':
+      return IvaEnum.IVA_5;
+    case 'IVA_10':
+      return IvaEnum.IVA_10;
+    default:
+      throw new Error('Invalid IVA');
+  }
+}
+
 interface SaleItem {
   productId: number;
   quantity: number;
   price: number;
   product: Product;
+  iva: 'IVA_0' | 'IVA_5' | 'IVA_10';
 }
 
 interface AddItemFormState {
@@ -129,6 +149,7 @@ const useAddItemForm = create<AddItemFormState>()(
               quantity: prev.quantity,
               price: prev.price,
               product: prev.product,
+              iva: prev.product.iva,
             });
           }
 
@@ -181,6 +202,7 @@ const AddItemForm: React.FC = () => {
             quantity,
             price: data.price,
             product: data,
+            iva: data.iva,
           });
           //focus on barcode Input
           barcodeInputRef.current?.focus();
@@ -338,6 +360,8 @@ const FinishSaleModal: React.FC = () => {
     },
   });
 
+  const { mutateAsync: FinishSale } = trpc.sales.create.useMutation();
+
   // get search client input ref
   const searchClientInputRef = React.useRef<HTMLInputElement>(null);
 
@@ -363,13 +387,36 @@ const FinishSaleModal: React.FC = () => {
         onSubmit={(e) => {
           e.preventDefault();
 
-          showNotification({
-            title: 'Venta Finalizada',
-            message: JSON.stringify({
-              entity,
-              saleType,
-            }),
-          });
+          FinishSale({
+            address: entity?.address ?? 'Troncal 3',
+            entityId: entity?.id,
+            document: entity?.document ?? '0000000000',
+            type: saleType,
+            items: useAddItemForm.getState().saleItems.map((item) => ({
+              ...item,
+              description: item.product.name,
+              iva: parseIva(item.product.iva),
+            })),
+          })
+            .then(() => {
+              clear();
+              setIsOpen(false);
+              useAddItemForm.getState().clearItems();
+              showNotification({
+                title: 'Venta Finalizada',
+                message: JSON.stringify({
+                  entity,
+                  saleType,
+                }),
+              });
+            })
+            .catch((err) => {
+              showNotification({
+                title: 'Error',
+                message: err.message,
+                color: 'red',
+              });
+            });
         }}
       >
         <Stack spacing={'lg'}>
