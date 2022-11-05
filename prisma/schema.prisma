@@ -56,10 +56,11 @@ model Entity {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status    Status    @default(ACTIVE)
-  deletedAt DateTime? @map("deleted_at")
-  Sale      Sale[]
-  Credit    Credit[]
+  status         Status           @default(ACTIVE)
+  deletedAt      DateTime?        @map("deleted_at")
+  Sale           Sale[]
+  Credit         Credit[]
+  PaymentProcess PaymentProcess[]
 }
 
 model Product {
@@ -205,11 +206,11 @@ model Interest {
   deletedAt DateTime? @map("deleted_at")
 }
 
-model Payment {
+model PaymentProcess {
   id Int @id @default(autoincrement())
 
-  creditId Int    @map("credit_id")
-  credit   Credit @relation(fields: [creditId], references: [id])
+  entityId Int    @map("entity_id")
+  entity   Entity @relation(fields: [entityId], references: [id])
 
   amount Int
 
@@ -218,6 +219,24 @@ model Payment {
 
   status    Status    @default(ACTIVE)
   deletedAt DateTime? @map("deleted_at")
+  Payment   Payment[]
+}
+
+model Payment {
+  id Int @id @default(autoincrement())
+
+  creditId Int    @map("credit_id")
+  credit   Credit @relation(fields: [creditId], references: [id])
+
+  paymentProcessId Int @map("payment_process_id")
+  amount           Int
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+
+  status         Status          @default(ACTIVE)
+  deletedAt      DateTime?       @map("deleted_at")
+  PaymentProcess PaymentProcess? @relation(fields: [paymentProcessId], references: [id])
 }
 
 enum LogType {
