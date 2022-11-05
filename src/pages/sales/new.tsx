@@ -13,8 +13,8 @@ import {
   TextInput,
 } from '@mantine/core';
 import { Entity, Product, SaleType } from '@prisma/client';
-import { IconCheck, IconPlus, IconSearch, IconTrash } from '@tabler/icons';
-import React, { KeyboardEvent } from 'react';
+import { IconCheck, IconPlus, IconSearch } from '@tabler/icons';
+import React from 'react';
 import PageHeader from '~/components/molecules/PageHeader';
 import { SelectEntityModal, SelectProductModal } from '~/components/organisms';
 import { NextPageWithLayout } from '~/pages/_app';
