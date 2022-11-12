@@ -11,13 +11,13 @@ import { salesRouter } from './sales';
 import { stockEntriesRouter } from './stockEntries';
 
 export const appRouter = t.router({
-  post: postRouter,
-  health: healthRouter,
-  entity: entityRouter,
-  log: logRouter,
-  products: productRouter,
-  stockEntries: stockEntriesRouter,
-  sales: salesRouter,
+   post: postRouter,
+   health: healthRouter,
+   entity: entityRouter,
+   log: logRouter,
+   products: productRouter,
+   stockEntries: stockEntriesRouter,
+   sales: salesRouter,
 });
 
 export type AppRouter = typeof appRouter;

@@ -7,48 +7,48 @@ import { trpc } from '~/utils/trpc';
 import { NextPageWithLayout } from '../_app';
 
 const SalesPage: NextPageWithLayout = () => {
-  const pagination = usePagination();
-  const { data: sales } = trpc.sales.list.useQuery(
-    {
-      pagination: pagination.data,
-    },
-    {
-      onSuccess: (data) => pagination.setTotal(data.count),
-    },
-  );
+   const pagination = usePagination();
+   const { data: sales } = trpc.sales.list.useQuery(
+      {
+         pagination: pagination.data,
+      },
+      {
+         onSuccess: (data) => pagination.setTotal(data.count),
+      },
+   );
 
-  return (
-    <PageHeader title="Ventas">
-      <PaginatedTable
-        items={sales?.items ?? []}
-        header={() => (
-          <tr>
-            <th>Cod.</th>
-            <th>Fecha</th>
-            <th>Estado</th>
-            <th>Tipo</th>
-            <th>Cliente</th>
-            <th>Total</th>
-            <th>Acciones</th>
-          </tr>
-        )}
-        rows={(sale) => (
-          <tr key={sale.id}>
-            <td>{sale.id}</td>
-            <td>{dayjs(sale.createdAt).format('DD/MM/YYYY')}</td>
-            <td>{sale.status}</td>
-            <td>{sale.type}</td>
-            <td>{sale.entity?.name ?? 'Cliente Ocasional'}</td>
-            <td>{sale.total}</td>
-            <td>
-              <Button>ver</Button>
-            </td>
-          </tr>
-        )}
-        pagination={pagination}
-      />
-    </PageHeader>
-  );
+   return (
+      <PageHeader title="Ventas">
+         <PaginatedTable
+            items={sales?.items ?? []}
+            header={() => (
+               <tr>
+                  <th>Cod.</th>
+                  <th>Fecha</th>
+                  <th>Estado</th>
+                  <th>Tipo</th>
+                  <th>Cliente</th>
+                  <th>Total</th>
+                  <th>Acciones</th>
+               </tr>
+            )}
+            rows={(sale) => (
+               <tr key={sale.id}>
+                  <td>{sale.id}</td>
+                  <td>{dayjs(sale.createdAt).format('DD/MM/YYYY')}</td>
+                  <td>{sale.status}</td>
+                  <td>{sale.type}</td>
+                  <td>{sale.entity?.name ?? 'Cliente Ocasional'}</td>
+                  <td>{sale.total}</td>
+                  <td>
+                     <Button>ver</Button>
+                  </td>
+               </tr>
+            )}
+            pagination={pagination}
+         />
+      </PageHeader>
+   );
 };
 
 export default SalesPage;

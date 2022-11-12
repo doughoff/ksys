@@ -3,30 +3,30 @@ import { PaginationController } from '~/hooks/usePagination';
 import { LoadingOverlay, Button, Group } from '@mantine/core';
 
 export interface Props<T> {
-  items: T[];
-  isLoading?: boolean;
-  header: () => React.ReactNode;
-  rows: (item: T) => React.ReactNode;
-  pagination: PaginationController;
+   items: T[];
+   isLoading?: boolean;
+   header: () => React.ReactNode;
+   rows: (item: T) => React.ReactNode;
+   pagination: PaginationController;
 }
 
 const PaginatedTable = <T,>({ items, header, rows, pagination }: Props<T>) => {
-  return (
-    <>
-      <Table>
-        <thead>{header()}</thead>
-        <tbody>{items.map(rows)}</tbody>
-      </Table>
-      <Center mt={'md'}>
-        <Pagination
-          page={pagination.data.page}
-          total={pagination.pages}
-          onChange={(page) => pagination.setPage(page)}
-        />
-        <br />
-      </Center>
-    </>
-  );
+   return (
+      <>
+         <Table>
+            <thead>{header()}</thead>
+            <tbody>{items.map(rows)}</tbody>
+         </Table>
+         <Center mt={'md'}>
+            <Pagination
+               page={pagination.data.page}
+               total={pagination.pages}
+               onChange={(page) => pagination.setPage(page)}
+            />
+            <br />
+         </Center>
+      </>
+   );
 };
 
 export default PaginatedTable;

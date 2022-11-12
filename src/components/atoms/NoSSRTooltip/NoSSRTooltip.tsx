@@ -1,21 +1,21 @@
 import React, { useEffect, useState } from 'react';
 
 export interface NoSSRProps {
-  children: React.ReactNode;
+   children: React.ReactNode;
 }
 
 const NoSSR: React.FunctionComponent<NoSSRProps> = ({ children }) => {
-  const [mounted, setMounted] = useState(false);
+   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+   useEffect(() => {
+      setMounted(true);
+   }, []);
 
-  if (!mounted) {
-    return <></>;
-  }
+   if (!mounted) {
+      return <></>;
+   }
 
-  return <>{children}</>;
+   return <>{children}</>;
 };
 
 export default NoSSR;

@@ -2,256 +2,256 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "postgres"
-  url      = env("DATABASE_URL")
+   provider = "postgres"
+   url      = env("DATABASE_URL")
 }
 
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
+   provider        = "prisma-client-js"
+   previewFeatures = ["interactiveTransactions"]
 }
 
 model Post {
-  id    String @id @default(uuid())
-  title String
-  text  String
+   id    String @id @default(uuid())
+   title String
+   text  String
 
-  // To return `Date`s intact through the API we use transformers
-  // https://trpc.io/docs/data-transformers
-  // This is unique so it can be used for cursor-based pagination
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+   // To return `Date`s intact through the API we use transformers
+   // https://trpc.io/docs/data-transformers
+   // This is unique so it can be used for cursor-based pagination
+   createdAt DateTime @default(now())
+   updatedAt DateTime @default(now()) @updatedAt
 }
 
 enum Status {
-  ACTIVE
-  DELETED
+   ACTIVE
+   DELETED
 }
 
 enum DocumentType {
-  RUC
-  CI
+   RUC
+   CI
 }
 
 enum IVA {
-  IVA_0
-  IVA_5
-  IVA_10
+   IVA_0
+   IVA_5
+   IVA_10
 }
 
 enum SaleType {
-  CREDIT
-  CASH
+   CREDIT
+   CASH
 }
 
 model Entity {
-  id           Int           @id @default(autoincrement())
-  name         String
-  cellphone    String?
-  documentType DocumentType? @map("document_type")
-  document     String?       @unique
-  creditLimit  Int           @default(0) @map("credit_limit")
-  address      String?
+   id           Int           @id @default(autoincrement())
+   name         String
+   cellphone    String?
+   documentType DocumentType? @map("document_type")
+   document     String?       @unique
+   creditLimit  Int           @default(0) @map("credit_limit")
+   address      String?
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status         Status           @default(ACTIVE)
-  deletedAt      DateTime?        @map("deleted_at")
-  Sale           Sale[]
-  Credit         Credit[]
-  PaymentProcess PaymentProcess[]
+   status         Status           @default(ACTIVE)
+   deletedAt      DateTime?        @map("deleted_at")
+   Sale           Sale[]
+   Credit         Credit[]
+   PaymentProcess PaymentProcess[]
 }
 
 model Product {
-  id          Int     @id @default(autoincrement())
-  barcode     String  @unique
-  name        String
-  description String?
-  price       Int
-  stock       Int
-  lastCost    Int     @map("last_cost")
+   id          Int     @id @default(autoincrement())
+   barcode     String  @unique
+   name        String
+   description String?
+   price       Int
+   stock       Int
+   lastCost    Int     @map("last_cost")
 
-  iva IVA @default(IVA_10)
+   iva IVA @default(IVA_10)
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status          Status            @default(ACTIVE)
-  deletedAt       DateTime?         @map("deleted_at")
-  StockEntryItems StockEntryItems[]
-  SaleItems       SaleItems[]
+   status          Status            @default(ACTIVE)
+   deletedAt       DateTime?         @map("deleted_at")
+   StockEntryItems StockEntryItems[]
+   SaleItems       SaleItems[]
 }
 
 model StockEntry {
-  id Int @id @default(autoincrement())
+   id Int @id @default(autoincrement())
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status    Status            @default(ACTIVE)
-  deletedAt DateTime?         @map("deleted_at")
-  items     StockEntryItems[]
+   status    Status            @default(ACTIVE)
+   deletedAt DateTime?         @map("deleted_at")
+   items     StockEntryItems[]
 
-  @@map("stock_entries")
+   @@map("stock_entries")
 }
 
 model StockEntryItems {
-  id Int @id @default(autoincrement())
+   id Int @id @default(autoincrement())
 
-  stockEntryId Int
-  stockEntry   StockEntry @relation(fields: [stockEntryId], references: [id])
+   stockEntryId Int
+   stockEntry   StockEntry @relation(fields: [stockEntryId], references: [id])
 
-  productId Int     @map("product_id")
-  product   Product @relation(fields: [productId], references: [id])
-  quantity  Int
-  cost      Int
+   productId Int     @map("product_id")
+   product   Product @relation(fields: [productId], references: [id])
+   quantity  Int
+   cost      Int
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status    Status    @default(ACTIVE)
-  deletedAt DateTime? @map("deleted_at")
+   status    Status    @default(ACTIVE)
+   deletedAt DateTime? @map("deleted_at")
 
-  @@map("stock_entry_items")
+   @@map("stock_entry_items")
 }
 
 model Sale {
-  id Int @id @default(autoincrement())
+   id Int @id @default(autoincrement())
 
-  type SaleType @default(CASH)
+   type SaleType @default(CASH)
 
-  entityId Int?    @map("entity_id")
-  entity   Entity? @relation(fields: [entityId], references: [id])
+   entityId Int?    @map("entity_id")
+   entity   Entity? @relation(fields: [entityId], references: [id])
 
-  printNumber String? @unique @map("print_number")
-  document    String?
-  address     String?
+   printNumber String? @unique @map("print_number")
+   document    String?
+   address     String?
 
-  total Int @default(0)
+   total Int @default(0)
 
-  totalIva5  Int @default(0) @map("total_iva_5")
-  totalIva10 Int @default(0) @map("total_iva_10")
-  totalIva0  Int @default(0) @map("total_iva_0")
+   totalIva5  Int @default(0) @map("total_iva_5")
+   totalIva10 Int @default(0) @map("total_iva_10")
+   totalIva0  Int @default(0) @map("total_iva_0")
 
-  liqIva5  Int @default(0) @map("liq_iva_5")
-  liqIva10 Int @default(0) @map("liq_iva_10")
-  liqIva0  Int @default(0) @map("liq_iva_0")
+   liqIva5  Int @default(0) @map("liq_iva_5")
+   liqIva10 Int @default(0) @map("liq_iva_10")
+   liqIva0  Int @default(0) @map("liq_iva_0")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status    Status      @default(ACTIVE)
-  deletedAt DateTime?   @map("deleted_at")
-  SaleItems SaleItems[]
-  Credit    Credit[]
+   status    Status      @default(ACTIVE)
+   deletedAt DateTime?   @map("deleted_at")
+   SaleItems SaleItems[]
+   Credit    Credit[]
 }
 
 model SaleItems {
-  id Int @id @default(autoincrement())
+   id Int @id @default(autoincrement())
 
-  saleId    Int     @map("sale_id")
-  sale      Sale    @relation(fields: [saleId], references: [id])
-  productId Int     @map("product_id")
-  product   Product @relation(fields: [productId], references: [id])
+   saleId    Int     @map("sale_id")
+   sale      Sale    @relation(fields: [saleId], references: [id])
+   productId Int     @map("product_id")
+   product   Product @relation(fields: [productId], references: [id])
 
-  description String
-  quantity    Int
-  price       Int
-  iva         IVA
+   description String
+   quantity    Int
+   price       Int
+   iva         IVA
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status    Status    @default(ACTIVE)
-  deletedAt DateTime? @map("deleted_at")
+   status    Status    @default(ACTIVE)
+   deletedAt DateTime? @map("deleted_at")
 
-  @@map("sale_items")
+   @@map("sale_items")
 }
 
 model Credit {
-  id Int @id @default(autoincrement())
+   id Int @id @default(autoincrement())
 
-  entityId Int    @map("entity_id")
-  entity   Entity @relation(fields: [entityId], references: [id])
+   entityId Int    @map("entity_id")
+   entity   Entity @relation(fields: [entityId], references: [id])
 
-  saleId Int?  @map("sale_id")
-  sale   Sale? @relation(fields: [saleId], references: [id])
+   saleId Int?  @map("sale_id")
+   sale   Sale? @relation(fields: [saleId], references: [id])
 
-  originalAmount Int @map("original_amount")
-  amount         Int
-  paymentLeft    Int @map("payment_left")
+   originalAmount Int @map("original_amount")
+   amount         Int
+   paymentLeft    Int @map("payment_left")
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status    Status     @default(ACTIVE)
-  deletedAt DateTime?  @map("deleted_at")
-  Interest  Interest[]
-  Payment   Payment[]
+   status    Status     @default(ACTIVE)
+   deletedAt DateTime?  @map("deleted_at")
+   Interest  Interest[]
+   Payment   Payment[]
 }
 
 model Interest {
-  id Int @id @default(autoincrement())
+   id Int @id @default(autoincrement())
 
-  creditId Int    @map("credit_id")
-  credit   Credit @relation(fields: [creditId], references: [id])
+   creditId Int    @map("credit_id")
+   credit   Credit @relation(fields: [creditId], references: [id])
 
-  amount Int
+   amount Int
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status    Status    @default(ACTIVE)
-  deletedAt DateTime? @map("deleted_at")
+   status    Status    @default(ACTIVE)
+   deletedAt DateTime? @map("deleted_at")
 }
 
 model PaymentProcess {
-  id Int @id @default(autoincrement())
+   id Int @id @default(autoincrement())
 
-  entityId Int    @map("entity_id")
-  entity   Entity @relation(fields: [entityId], references: [id])
+   entityId Int    @map("entity_id")
+   entity   Entity @relation(fields: [entityId], references: [id])
 
-  amount Int
+   amount Int
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status    Status    @default(ACTIVE)
-  deletedAt DateTime? @map("deleted_at")
-  Payment   Payment[]
+   status    Status    @default(ACTIVE)
+   deletedAt DateTime? @map("deleted_at")
+   Payment   Payment[]
 }
 
 model Payment {
-  id Int @id @default(autoincrement())
+   id Int @id @default(autoincrement())
 
-  creditId Int    @map("credit_id")
-  credit   Credit @relation(fields: [creditId], references: [id])
+   creditId Int    @map("credit_id")
+   credit   Credit @relation(fields: [creditId], references: [id])
 
-  paymentProcessId Int @map("payment_process_id")
-  amount           Int
+   paymentProcessId Int @map("payment_process_id")
+   amount           Int
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
-  status         Status          @default(ACTIVE)
-  deletedAt      DateTime?       @map("deleted_at")
-  PaymentProcess PaymentProcess? @relation(fields: [paymentProcessId], references: [id])
+   status         Status          @default(ACTIVE)
+   deletedAt      DateTime?       @map("deleted_at")
+   PaymentProcess PaymentProcess? @relation(fields: [paymentProcessId], references: [id])
 }
 
 enum LogType {
-  CREATE
-  UPDATE
+   CREATE
+   UPDATE
 }
 
 model Log {
-  id Int @id @default(autoincrement())
+   id Int @id @default(autoincrement())
 
-  createdAt DateTime @default(now()) @map("created_at")
+   createdAt DateTime @default(now()) @map("created_at")
 
-  table String
-  rowId Int     @map("row_id")
-  type  LogType
+   table String
+   rowId Int     @map("row_id")
+   type  LogType
 
-  data Json?
+   data Json?
 }

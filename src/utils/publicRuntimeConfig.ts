@@ -14,4 +14,4 @@ type PublicRuntimeConfig = typeof config.publicRuntimeConfig;
 const nextConfig = getConfig();
 
 export const publicRuntimeConfig =
-  nextConfig.publicRuntimeConfig as PublicRuntimeConfig;
+   nextConfig.publicRuntimeConfig as PublicRuntimeConfig;

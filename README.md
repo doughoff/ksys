@@ -1,7 +1,7 @@
 ## Features
 
-- 🧙‍♂️ Basic setup with [tRPC](https://trpc.io)
-- ⚡ Full-stack React with Next.js
+-  🧙‍♂️ Basic setup with [tRPC](https://trpc.io)
+-  ⚡ Full-stack React with Next.js
 
 ---
 
