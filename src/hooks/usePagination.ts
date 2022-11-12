@@ -11,11 +11,14 @@ export interface PaginationController {
    };
 }
 
-export const usePagination = (): PaginationController => {
-   const [page, setPage] = React.useState(1);
+export const usePagination = (
+   initialTotal?: number,
+   initialPage?: number,
+): PaginationController => {
+   const [page, setPage] = React.useState(initialPage ?? 1);
    const [pageSize, setPageSize] = React.useState(10);
    const [pages, setPages] = React.useState(0);
-   const [total, setTotal] = React.useState(0);
+   const [total, setTotal] = React.useState(initialTotal ?? 0);
 
    React.useEffect(() => {
       const pages = Math.ceil(total / pageSize);

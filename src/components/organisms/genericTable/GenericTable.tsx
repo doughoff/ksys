@@ -1,42 +1,37 @@
-import { TRPCClientErrorLike } from '@trpc/client';
-import { DecorateProcedure, UseTRPCQueryOptions } from '@trpc/react/shared';
-import {
-   AnyQueryProcedure,
-   inferProcedureInput,
-   inferProcedureOutput,
-} from '@trpc/server';
+import { Center, Pagination, Table } from '@mantine/core';
+import { usePagination } from '~/hooks/usePagination';
 
-type GenericTableProps<
-   TProcedure extends AnyQueryProcedure,
-   TInput extends inferProcedureInput<TProcedure>,
-   TPath extends string,
-> = {
-   query: DecorateProcedure<TProcedure, TPath>;
-   input: TInput;
-   queryOptions: UseTRPCQueryOptions<
-      TPath,
-      inferProcedureInput<TProcedure>,
-      inferProcedureOutput<TProcedure>,
-      inferProcedureOutput<TProcedure>,
-      TRPCClientErrorLike<TProcedure>
-   >;
-   rows: (
-      data: inferProcedureOutput<TProcedure> | undefined,
-   ) => React.ReactNode;
+export interface Props<T> {
+   items: T[];
+   isLoading?: boolean;
+   header: () => React.ReactNode;
+   rows: (item: T) => React.ReactNode;
+}
+
+const PaginatedTable = <T,>({ items, header, rows }: Props<T>) => {
+   const pagination = usePagination(items.length ?? 0);
+
+   const displayItems = items.slice(
+      (pagination.data.page - 1) * pagination.data.pageSize,
+      pagination.data.page * pagination.data.pageSize,
+   );
+
+   return (
+      <>
+         <Table>
+            <thead>{header()}</thead>
+            <tbody>{displayItems.map(rows)}</tbody>
+         </Table>
+         <Center mt={'md'}>
+            <Pagination
+               page={pagination.data.page}
+               total={pagination.pages}
+               onChange={(page) => pagination.setPage(page)}
+            />
+            <br />
+         </Center>
+      </>
+   );
 };
 
-const GenericTable = <
-   TProcedure extends AnyQueryProcedure,
-   TInput extends { limit: number } & inferProcedureInput<TProcedure>,
-   TPath extends string,
->({
-   query,
-   input,
-   queryOptions,
-   rows,
-}: GenericTableProps<TProcedure, TInput, TPath>) => {
-   const { data } = query.useQuery(input, queryOptions);
-   return <div>{rows(data)}</div>;
-};
-
-export default GenericTable;
+export default PaginatedTable;
