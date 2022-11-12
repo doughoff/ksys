@@ -53,7 +53,7 @@ const MyApp = (({ Component, pageProps }: AppPropsWithLayout) => {
          <MantineProvider
             withGlobalStyles
             withNormalizeCSS
-            theme={{ colorScheme: 'dark' }}
+            theme={{ colorScheme: 'light' }}
          >
             <ModalsProvider>
                <NotificationsProvider position="top-right">

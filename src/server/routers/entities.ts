@@ -51,6 +51,30 @@ export const entityRouter = t.router({
       .query(async ({ input }) => {
          return prisma.entity.findUnique({
             where: { id: input.id },
+            include: {
+               Credit: {
+                  where: {
+                     paymentLeft: {
+                        gt: 0,
+                     },
+                  },
+                  include: {
+                     sale: true,
+                  },
+               },
+               PaymentProcess: {
+                  take: 100,
+                  orderBy: {
+                     createdAt: 'desc',
+                  },
+               },
+               Sale: {
+                  take: 100,
+                  orderBy: {
+                     createdAt: 'desc',
+                  },
+               },
+            },
          });
       }),
    add: t.procedure.input(entityCreateSchema).mutation(async ({ input }) => {

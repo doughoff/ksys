@@ -47,6 +47,25 @@ export const salesRouter = t.router({
                total += totalItem;
             }
 
+            const sale = await prisma.sale.create({
+               data: {
+                  entityId: input.entityId,
+                  address: input.address,
+                  document: input.document,
+                  type: input.type,
+                  total,
+                  SaleItems: {
+                     create: input.items.map((item) => ({
+                        productId: item.productId,
+                        description: item.description,
+                        quantity: item.quantity,
+                        price: item.price,
+                        iva: item.iva,
+                     })),
+                  },
+               },
+            });
+
             if (input.type === 'CREDIT') {
                if (!input.entityId) {
                   throw new Error(
@@ -93,6 +112,7 @@ export const salesRouter = t.router({
                   data: {
                      entityId: input.entityId,
                      amount: total,
+                     saleId: sale.id,
                      originalAmount: total,
                      paymentLeft: total,
                   },
@@ -113,25 +133,6 @@ export const salesRouter = t.router({
                   },
                });
             }
-
-            const sale = await prisma.sale.create({
-               data: {
-                  entityId: input.entityId,
-                  address: input.address,
-                  document: input.document,
-                  type: input.type,
-                  total,
-                  SaleItems: {
-                     create: input.items.map((item) => ({
-                        productId: item.productId,
-                        description: item.description,
-                        quantity: item.quantity,
-                        price: item.price,
-                        iva: item.iva,
-                     })),
-                  },
-               },
-            });
 
             // update products stock
             for (const item of input.items) {

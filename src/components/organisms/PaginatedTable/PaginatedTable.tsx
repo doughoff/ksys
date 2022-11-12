@@ -12,7 +12,7 @@ export interface Props<T> {
 const PaginatedTable = <T,>({ items, header, rows, pagination }: Props<T>) => {
    return (
       <>
-         <Table>
+         <Table striped highlightOnHover>
             <thead>{header()}</thead>
             <tbody>{items.map(rows)}</tbody>
          </Table>

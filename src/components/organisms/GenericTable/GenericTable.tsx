@@ -3,7 +3,6 @@ import { usePagination } from '~/hooks/usePagination';
 
 export interface Props<T> {
    items: T[];
-   isLoading?: boolean;
    header: () => React.ReactNode;
    rows: (item: T) => React.ReactNode;
 }
@@ -18,10 +17,15 @@ const PaginatedTable = <T,>({ items, header, rows }: Props<T>) => {
 
    return (
       <>
-         <Table>
+         <Table striped highlightOnHover withColumnBorders>
             <thead>{header()}</thead>
             <tbody>{displayItems.map(rows)}</tbody>
          </Table>
+
+         {items.length === 0 ? (
+            <Center mt={'md'}>Ningun registro</Center>
+         ) : undefined}
+
          <Center mt={'md'}>
             <Pagination
                page={pagination.data.page}

@@ -6,7 +6,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import React from 'react';
 import EntityFormModal from '~/components/forms/EntityFormModal';
-import GenericTable from '~/components/organisms/genericTable/GenericTable';
+import GenericTable from '~/components/organisms/GenericTable/GenericTable';
 import PaginatedTable from '~/components/organisms/PaginatedTable/PaginatedTable';
 import { usePagination } from '~/hooks/usePagination';
 import { appRouter, AppRouter } from '~/server/routers/_app';
