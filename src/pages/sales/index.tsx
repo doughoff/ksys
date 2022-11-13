@@ -1,4 +1,5 @@
 import { Button } from '@mantine/core';
+import { NextLink } from '@mantine/next';
 import dayjs from 'dayjs';
 import PageHeader from '~/components/molecules/PageHeader';
 import PaginatedTable from '~/components/organisms/PaginatedTable/PaginatedTable';
@@ -40,8 +41,14 @@ const SalesPage: NextPageWithLayout = () => {
                   <td>{sale.type}</td>
                   <td>{sale.entity?.name ?? 'Cliente Ocasional'}</td>
                   <td>{sale.total}</td>
-                  <td>
-                     <Button>ver</Button>
+                  <td width={'120px'}>
+                     <Button
+                        variant="filled"
+                        component={NextLink}
+                        href={`/sales/${sale.id}`}
+                     >
+                        Detalles
+                     </Button>
                   </td>
                </tr>
             )}

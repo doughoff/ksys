@@ -10,13 +10,17 @@ import {
    Grid,
    Text,
    Tabs,
+   ActionIcon,
 } from '@mantine/core';
 import {
+   IconArrowRight,
+   IconEye,
    IconGridDots,
    IconPencil,
    IconReceipt2,
    IconReportMoney,
    IconShoppingCart,
+   IconTrash,
 } from '@tabler/icons';
 import dayjs from 'dayjs';
 import PageHeader from '~/components/molecules/PageHeader';
@@ -25,6 +29,10 @@ import EntityFormModal from '~/components/forms/EntityFormModal';
 import React from 'react';
 import { currencyFormatter } from '~/utils/formatters';
 import { GenericTable } from '~/components/organisms';
+import PaymentModal from '~/components/forms/PaymentModal';
+import StatusBadge from '~/components/atoms/StatusBadge';
+import { openConfirmModal } from '@mantine/modals';
+import { NextLink } from '@mantine/next';
 
 const EntityDetailPage: NextPageWithLayout = () => {
    const id = useRouter().query.id as string;
@@ -32,6 +40,17 @@ const EntityDetailPage: NextPageWithLayout = () => {
       id: parseInt(id),
    });
    const [showEditForm, setShowEditForm] = React.useState(false);
+   const [showPaymentForm, setShowPaymentForm] = React.useState(false);
+
+   const trpcUtils = trpc.useContext();
+
+   const { mutateAsync: cancelPayment, isLoading: cancelPaymentInProcess } =
+      trpc.payments.cancel.useMutation({
+         async onSuccess() {
+            await trpcUtils.payments.list.invalidate();
+            await trpcUtils.entity.byId.invalidate({ id: entity?.id ?? 0 });
+         },
+      });
 
    if (error) return <div>failed to load</div>;
    if (!entity) return <div>loading...</div>;
@@ -42,7 +61,14 @@ const EntityDetailPage: NextPageWithLayout = () => {
          extra={[
             <Button
                key={'actions'}
-               variant={'outline'}
+               color={'blue'}
+               leftIcon={<IconReportMoney />}
+               onClick={() => setShowPaymentForm(true)}
+            >
+               Agregar Pago
+            </Button>,
+            <Button
+               key={'actions'}
                color={'blue'}
                leftIcon={<IconPencil />}
                onClick={() => setShowEditForm(true)}
@@ -87,7 +113,7 @@ const EntityDetailPage: NextPageWithLayout = () => {
             />
          </Grid>
 
-         <Tabs defaultValue={'pendingPayments'}>
+         <Tabs defaultValue={'payments'}>
             <Tabs.List>
                <Tabs.Tab value={'payments'} icon={<IconReceipt2 />}>
                   Pagos
@@ -106,6 +132,7 @@ const EntityDetailPage: NextPageWithLayout = () => {
                         header={() => (
                            <tr>
                               <th>Cod.</th>
+                              <th>Estado</th>
                               <th>Fecha</th>
                               <th>Cod. Venta</th>
                               <th
@@ -127,18 +154,23 @@ const EntityDetailPage: NextPageWithLayout = () => {
                         rows={(creditItem) => (
                            <tr>
                               <td width="80px">{creditItem.id}</td>
+                              <td width="100px">
+                                 <StatusBadge status={creditItem.status} />
+                              </td>
                               <td width="120px">
                                  {dayjs(creditItem.createdAt).format(
                                     'DD/MM/YYYY',
                                  )}
                               </td>
-                              <td width="80px">{creditItem.sale?.id ?? '-'}</td>
+                              <td width="120px">
+                                 {creditItem.sale?.id ?? '-'}
+                              </td>
                               <td
                                  style={{
                                     textAlign: 'right',
                                  }}
                               >
-                                 {currencyFormatter(creditItem.amount)}
+                                 {currencyFormatter(creditItem.originalAmount)}
                               </td>
                               <td
                                  style={{
@@ -158,6 +190,7 @@ const EntityDetailPage: NextPageWithLayout = () => {
                         header={() => (
                            <tr>
                               <th>Cod.</th>
+                              <th>Estado</th>
                               <th>Fecha</th>
                               <th
                                  style={{
@@ -166,11 +199,15 @@ const EntityDetailPage: NextPageWithLayout = () => {
                               >
                                  Valor
                               </th>
+                              <th>#</th>
                            </tr>
                         )}
                         rows={(paymentProcess) => (
                            <tr>
                               <td width="80px">{paymentProcess.id}</td>
+                              <td width="100px">
+                                 <StatusBadge status={paymentProcess.status} />
+                              </td>
                               <td width="200px">
                                  {dayjs(paymentProcess.createdAt).format(
                                     'DD/MM/YYYY',
@@ -183,6 +220,46 @@ const EntityDetailPage: NextPageWithLayout = () => {
                               >
                                  {currencyFormatter(paymentProcess.amount)}
                               </td>
+                              <td width="50px">
+                                 <ActionIcon
+                                    color={
+                                       paymentProcess.status === 'ACTIVE'
+                                          ? 'red'
+                                          : 'gray'
+                                    }
+                                    size={'sm'}
+                                    disabled={
+                                       paymentProcess.status !== 'ACTIVE' ||
+                                       cancelPaymentInProcess
+                                    }
+                                    loading={cancelPaymentInProcess}
+                                    onClick={() => {
+                                       openConfirmModal({
+                                          title: 'Cancelar Pago',
+                                          children: (
+                                             <Text size={'sm'}>
+                                                ¿Está seguro que desea cancelar
+                                                el pago?
+                                             </Text>
+                                          ),
+                                          labels: {
+                                             confirm: 'Cancelar',
+                                             cancel: 'No',
+                                          },
+                                          confirmProps: {
+                                             color: 'red',
+                                          },
+                                          onConfirm: async () => {
+                                             cancelPayment({
+                                                id: paymentProcess.id,
+                                             });
+                                          },
+                                       });
+                                    }}
+                                 >
+                                    <IconTrash />
+                                 </ActionIcon>
+                              </td>
                            </tr>
                         )}
                      />
@@ -191,7 +268,55 @@ const EntityDetailPage: NextPageWithLayout = () => {
             </Tabs.Panel>
 
             <Tabs.Panel value="sales" pt="xs">
-               <Title order={4}>Ventas</Title>
+               <GenericTable
+                  items={entity.Sale}
+                  header={() => (
+                     <tr>
+                        <th>Cod.</th>
+                        <th>Estado</th>
+                        <th>Fecha</th>
+                        <th>Tipo</th>
+                        <th
+                           style={{
+                              textAlign: 'right',
+                           }}
+                        >
+                           Valor
+                        </th>
+                        <th>#</th>
+                     </tr>
+                  )}
+                  rows={(sale) => (
+                     <tr>
+                        <td width="80px">{sale.id}</td>
+                        <td width="100px">
+                           <StatusBadge status={sale.status} />
+                        </td>
+                        <td width="200px">
+                           {dayjs(sale.createdAt).format('DD/MM/YYYY')}
+                        </td>
+                        <td width="100px">
+                           {sale.type === 'CREDIT' ? 'Crédito' : 'Contado'}
+                        </td>
+                        <td
+                           style={{
+                              textAlign: 'right',
+                           }}
+                        >
+                           {currencyFormatter(sale.total)}
+                        </td>
+                        <td width="50px">
+                           <ActionIcon
+                              color={'blue'}
+                              component={NextLink}
+                              href={`/sales/${sale.id}`}
+                           >
+                              <IconArrowRight />
+                           </ActionIcon>
+                        </td>
+                     </tr>
+                  )}
+               />
             </Tabs.Panel>
          </Tabs>
          {showEditForm && (
@@ -199,6 +324,13 @@ const EntityDetailPage: NextPageWithLayout = () => {
                isOpen={showEditForm}
                onClose={() => setShowEditForm(false)}
                entity={entity}
+            />
+         )}
+         {showPaymentForm && (
+            <PaymentModal
+               isOpen={showPaymentForm}
+               onClose={() => setShowPaymentForm(false)}
+               entityId={entity.id}
             />
          )}
       </PageHeader>

@@ -135,15 +135,11 @@ const ProductFormModal: React.FunctionComponent<Props> = ({
             )}
 
             <Group position="right" mt="md" spacing="md">
-               <Button variant="outline" onClick={onClose}>
+               <Button color={'red'} variant="outline" onClick={onClose}>
                   Cancelar
                </Button>
 
-               <Button
-                  type="submit"
-                  variant="light"
-                  loading={isCreating || isUpdating}
-               >
+               <Button type="submit" loading={isCreating || isUpdating}>
                   {product ? 'Actualizar' : 'Crear'}
                </Button>
             </Group>

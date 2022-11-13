@@ -1,5 +1,5 @@
 import { Button, Group, Stack, TextInput, Title } from '@mantine/core';
-import { IconSearch } from '@tabler/icons';
+import { IconPlus, IconSearch } from '@tabler/icons';
 import { NextLink } from '@mantine/next';
 import dayjs from 'dayjs';
 import Head from 'next/head';
@@ -41,8 +41,12 @@ const IndexPage: NextPageWithLayout = () => {
          <Stack>
             <Group position="apart">
                <Title order={2}>Clientes</Title>
-               <Button variant="filled" onClick={() => setIsOpen(true)}>
-                  Add post
+               <Button
+                  variant="filled"
+                  leftIcon={<IconPlus />}
+                  onClick={() => setIsOpen(true)}
+               >
+                  Adicionar Cliente
                </Button>
             </Group>
             <TextInput
@@ -72,7 +76,6 @@ const IndexPage: NextPageWithLayout = () => {
                      <td width={'120px'}>
                         <Button
                            variant="filled"
-                           onClick={() => setIsOpen(true)}
                            component={NextLink}
                            href={`/entities/${row.id}`}
                         >

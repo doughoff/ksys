@@ -1,5 +1,7 @@
-import { Stack, Title, Group } from '@mantine/core';
+import { Stack, Title, Group, ActionIcon } from '@mantine/core';
+import { IconArrowLeft } from '@tabler/icons';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 export interface PageHeaderProps {
    title: string;
@@ -16,6 +18,7 @@ const PageHeader = ({
    children,
    onKeyDown,
 }: PageHeaderProps) => {
+   const router = useRouter();
    return (
       <>
          <Head>
@@ -34,6 +37,10 @@ const PageHeader = ({
          >
             <Group position={'apart'} spacing={'sm'}>
                <Group>
+                  <ActionIcon color="gray" onClick={() => router.back()}>
+                     <IconArrowLeft />
+                  </ActionIcon>
+
                   <Title order={3}>{title}</Title>
                   {tags && <div>{tags}</div>}
                </Group>

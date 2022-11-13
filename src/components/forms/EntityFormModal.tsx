@@ -155,6 +155,8 @@ const EntityFormModal: React.FunctionComponent<Props> = ({
                />
                <Group position="right" mt="md" spacing="md">
                   <Button
+                     color={'red'}
+                     variant="outline"
                      onClick={() => {
                         onClose();
                      }}

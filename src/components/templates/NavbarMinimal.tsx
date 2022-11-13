@@ -96,8 +96,7 @@ const mockdata = [
    { icon: IconTransferIn, label: 'Compras', href: '/stock_entries' },
    { icon: IconShoppingCart, label: 'Pantalla de Venta', href: '/sales/new' },
    { icon: IconSearch, label: 'Ventas', href: '/sales', exactMatch: true },
-   { icon: IconCash, label: 'Pagamentos', href: '/payments' },
-   { icon: IconActivity, label: 'Logs', href: '/logs' },
+   // { icon: IconActivity, label: 'Logs', href: '/logs' },
 ];
 
 export function NavbarMinimal() {

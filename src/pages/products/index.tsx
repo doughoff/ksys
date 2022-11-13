@@ -74,7 +74,7 @@ const ProductsPage: NextPageWithLayout = () => {
                   <td style={{ textAlign: 'right' }}>
                      {currencyFormatter(item.price)}
                   </td>
-                  <td style={{ textAlign: 'right' }}>x{item.stock}</td>
+                  <td style={{ textAlign: 'right' }}>{item.stock}</td>
                   <td width={120}>
                      <Button
                         variant="filled"

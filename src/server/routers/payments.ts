@@ -29,7 +29,7 @@ export const paymentsRouter = t.router({
             );
 
             if (input.amount > totalPaymentLeft) {
-               throw new Error('Amount is greater than total payment left');
+               throw new Error('Valor es mayor al valor de la deuda');
             }
 
             let amountLeft = input.amount;

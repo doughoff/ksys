@@ -186,4 +186,32 @@ export const salesRouter = t.router({
             count: total,
          };
       }),
+   byId: t.procedure
+      .input(
+         z.object({
+            id: z.number(),
+         }),
+      )
+      .query(async ({ input }) => {
+         const sale = await prisma.sale.findUnique({
+            where: {
+               id: input.id,
+            },
+            include: {
+               SaleItems: {
+                  include: {
+                     product: true,
+                  },
+               },
+               entity: true,
+               Credit: true,
+            },
+         });
+
+         if (!sale) {
+            throw new Error('Sale not found');
+         }
+
+         return sale;
+      }),
 });
