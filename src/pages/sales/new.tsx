@@ -77,7 +77,7 @@ interface AddItemFormState {
 }
 
 const useAddItemForm = create<AddItemFormState>()(
-   persist((set) => ({
+   (set) => ({
       barcode: '',
       quantity: 1,
       price: 0,
@@ -168,7 +168,7 @@ const useAddItemForm = create<AddItemFormState>()(
       shouldFocusBarcode: true,
       setShouldFocusBarcode: (shouldFocusBarcode) =>
          set({ shouldFocusBarcode }),
-   })),
+   }),
 );
 
 const AddItemForm: React.FC = () => {

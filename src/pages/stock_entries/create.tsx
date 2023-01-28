@@ -40,7 +40,7 @@ interface NewStockEntryState {
 
 const useNewStockEntry = create<NewStockEntryState>()(
    devtools(
-      persist((set) => ({
+      (set) => ({
          items: [],
          addItem: (item) =>
             set((prev) => {
@@ -80,7 +80,7 @@ const useNewStockEntry = create<NewStockEntryState>()(
                items: state.items.filter((_, i) => i !== index),
             })),
          clearItems: () => set({ items: [] }),
-      })),
+      }),
    ),
 );
 

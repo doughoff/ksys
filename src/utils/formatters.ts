@@ -1,5 +1,5 @@
-export function currencyParser(value: string): string | undefined {
-   const parsed = parseInt(value?.replace(/[^0-9]/g, ''));
+export function currencyParser(value: string | undefined): string {
+   const parsed = parseInt(value?.replace(/[^0-9]/g, '') ?? '');
    if (Number.isNaN(parsed)) return '0';
    return parsed.toString();
 }

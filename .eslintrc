@@ -4,7 +4,7 @@
       "plugin:@typescript-eslint/recommended", // Uses the recommended rules from the @typescript-eslint/eslint-plugin
       "plugin:react/recommended",
       "plugin:react-hooks/recommended",
-      "plugin:prettier/recommended"
+      //"plugin:prettier/recommended"
    ],
    "parserOptions": {
       "project": "tsconfig.json",
