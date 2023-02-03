@@ -76,100 +76,96 @@ interface AddItemFormState {
    setShouldFocusBarcode: (shouldFocusBarcode: boolean) => void;
 }
 
-const useAddItemForm = create<AddItemFormState>()(
-   (set) => ({
-      barcode: '',
-      quantity: 1,
-      price: 0,
-      editPriceMode: false,
-      saleItems: [],
-      incrementQuantity: () => set((prev) => ({ quantity: prev.quantity + 1 })),
-      decrementQuantity: () =>
-         set((prev) => ({
-            quantity: prev.quantity > 1 ? prev.quantity - 1 : prev.quantity,
-         })),
-      setQuantity: (quantity) => set({ quantity }),
-      setPrice: (cost) => set({ price: cost }),
-      setBarcode: (barcode) => set({ barcode, product: undefined, price: 0 }),
-      setProduct: (product) =>
-         set({
-            product,
-            barcode: product?.barcode ?? '',
-            price: product?.price ?? 0,
-         }),
-      setEditPriceMode: (editPriceMode) => set({ editPriceMode }),
-      addItem: (item) =>
-         set((prev) => {
-            const existingItemIndex = prev.saleItems.findIndex(
-               (i) => i.productId === item.productId,
+const useAddItemForm = create<AddItemFormState>()((set) => ({
+   barcode: '',
+   quantity: 1,
+   price: 0,
+   editPriceMode: false,
+   saleItems: [],
+   incrementQuantity: () => set((prev) => ({ quantity: prev.quantity + 1 })),
+   decrementQuantity: () =>
+      set((prev) => ({
+         quantity: prev.quantity > 1 ? prev.quantity - 1 : prev.quantity,
+      })),
+   setQuantity: (quantity) => set({ quantity }),
+   setPrice: (cost) => set({ price: cost }),
+   setBarcode: (barcode) => set({ barcode, product: undefined, price: 0 }),
+   setProduct: (product) =>
+      set({
+         product,
+         barcode: product?.barcode ?? '',
+         price: product?.price ?? 0,
+      }),
+   setEditPriceMode: (editPriceMode) => set({ editPriceMode }),
+   addItem: (item) =>
+      set((prev) => {
+         const existingItemIndex = prev.saleItems.findIndex(
+            (i) => i.productId === item.productId,
+         );
+
+         const saleItemsCopy = [...prev.saleItems];
+
+         if (existingItemIndex !== -1) {
+            const alreadyExistingItem = saleItemsCopy[existingItemIndex];
+            if (alreadyExistingItem) {
+               alreadyExistingItem.quantity += item.quantity;
+               saleItemsCopy[existingItemIndex] = alreadyExistingItem;
+            }
+         } else {
+            saleItemsCopy.unshift(item);
+         }
+
+         return {
+            ...prev,
+            saleItems: saleItemsCopy,
+            barcode: '',
+            quantity: 1,
+            price: 0,
+         };
+      }),
+   removeItem: (index) =>
+      set((prev) => ({
+         saleItems: prev.saleItems.filter((_, i) => i !== index),
+      })),
+   clearItems: () => set({ saleItems: [] }),
+   pushItem: () =>
+      set((prev) => {
+         if (prev.product) {
+            const saleItemsCopy = [...prev.saleItems];
+            const productAlreadyAddedIndex = prev.saleItems.findIndex(
+               (i) =>
+                  i.productId === prev.product?.id && i.price === prev.price,
             );
 
-            const saleItemsCopy = [...prev.saleItems];
-
-            if (existingItemIndex !== -1) {
-               const alreadyExistingItem = saleItemsCopy[existingItemIndex];
-               if (alreadyExistingItem) {
-                  alreadyExistingItem.quantity += item.quantity;
-                  saleItemsCopy[existingItemIndex] = alreadyExistingItem;
+            if (productAlreadyAddedIndex !== -1) {
+               const alreadyAddedCopy = saleItemsCopy[productAlreadyAddedIndex];
+               if (alreadyAddedCopy) {
+                  alreadyAddedCopy.quantity += prev.quantity;
+                  saleItemsCopy[productAlreadyAddedIndex] = alreadyAddedCopy;
                }
             } else {
-               saleItemsCopy.unshift(item);
+               saleItemsCopy.unshift({
+                  productId: prev.product.id,
+                  quantity: prev.quantity,
+                  price: prev.price,
+                  product: prev.product,
+                  iva: prev.product.iva,
+               });
             }
 
             return {
-               ...prev,
                saleItems: saleItemsCopy,
                barcode: '',
                quantity: 1,
                price: 0,
+               product: undefined,
             };
-         }),
-      removeItem: (index) =>
-         set((prev) => ({
-            saleItems: prev.saleItems.filter((_, i) => i !== index),
-         })),
-      clearItems: () => set({ saleItems: [] }),
-      pushItem: () =>
-         set((prev) => {
-            if (prev.product) {
-               const saleItemsCopy = [...prev.saleItems];
-               const productAlreadyAddedIndex = prev.saleItems.findIndex(
-                  (i) =>
-                     i.productId === prev.product?.id && i.price === prev.price,
-               );
-
-               if (productAlreadyAddedIndex !== -1) {
-                  const alreadyAddedCopy =
-                     saleItemsCopy[productAlreadyAddedIndex];
-                  if (alreadyAddedCopy) {
-                     alreadyAddedCopy.quantity += prev.quantity;
-                     saleItemsCopy[productAlreadyAddedIndex] = alreadyAddedCopy;
-                  }
-               } else {
-                  saleItemsCopy.unshift({
-                     productId: prev.product.id,
-                     quantity: prev.quantity,
-                     price: prev.price,
-                     product: prev.product,
-                     iva: prev.product.iva,
-                  });
-               }
-
-               return {
-                  saleItems: saleItemsCopy,
-                  barcode: '',
-                  quantity: 1,
-                  price: 0,
-                  product: undefined,
-               };
-            }
-            return prev;
-         }),
-      shouldFocusBarcode: true,
-      setShouldFocusBarcode: (shouldFocusBarcode) =>
-         set({ shouldFocusBarcode }),
-   }),
-);
+         }
+         return prev;
+      }),
+   shouldFocusBarcode: true,
+   setShouldFocusBarcode: (shouldFocusBarcode) => set({ shouldFocusBarcode }),
+}));
 
 const AddItemForm: React.FC = () => {
    const {
@@ -362,6 +358,7 @@ const FinishSaleModal: React.FC = () => {
    const [userDocument, setUserDocument] = React.useState('');
    const [openEntitySearch, setOpenEntitySearch] = React.useState(false);
    const [shouldSearchEntity, setShouldSearchEntity] = React.useState(false);
+   const [paymentAmount, setPaymentAmount] = React.useState(0);
    const { refetch } = trpc.entity.byDocument.useQuery(userDocument, {
       enabled: shouldSearchEntity,
       onSuccess(data) {
@@ -384,6 +381,11 @@ const FinishSaleModal: React.FC = () => {
          }
       }, 300);
    }, [isOpen]);
+
+   const saleTotal = useAddItemForm
+      .getState()
+      .saleItems.reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
+      .toFixed(0);
 
    return (
       <Modal
@@ -477,6 +479,34 @@ const FinishSaleModal: React.FC = () => {
                   <Radio label="Efectivo" value={SaleType.CASH} />
                   <Radio label="Crédito" value={SaleType.CREDIT} />
                </Radio.Group>
+               <Text>Total: {currencyFormatter(saleTotal)}</Text>
+
+               {/* when not credit, payment on cash show input for payment ammount and change */}
+
+               {saleType === SaleType.CASH && (
+                  <Stack spacing={'lg'}>
+                     <NumberInput
+                        label="Monto Pagado"
+                        parser={currencyParser}
+                        formatter={currencyFormatter}
+                        onChange={(n) => {
+                           setPaymentAmount(n ?? 0);
+                        }}
+                        value={paymentAmount}
+                     />
+                     <NumberInput
+                        label="Cambio"
+                        value={
+                           paymentAmount - parseInt(saleTotal) < 0
+                              ? undefined
+                              : paymentAmount - parseInt(saleTotal)
+                        }
+                        formatter={(value) => currencyFormatter(value)}
+                        parser={(value) => currencyParser(value)}
+                        disabled
+                     />
+                  </Stack>
+               )}
 
                <Button
                   type="submit"
@@ -676,6 +706,7 @@ const NewSalePage: NextPageWithLayout = () => {
             <div
                style={{
                   display: 'flex',
+                  justifyContent: 'space-between',
                   width: '100%',
                   height: '100px',
                }}
@@ -687,6 +718,28 @@ const NewSalePage: NextPageWithLayout = () => {
                      checked={editPriceMode}
                      onChange={(e) => setEditPriceMode(e.currentTarget.checked)}
                   />
+               </Group>
+               {/* sale total */}
+               <Group
+               // style={{
+               //    borderRadius: 5,
+               //    border: '2px solid #ccc',
+               //    padding: 5,
+               //    textAlign: 'center',
+               //    lineHeight: '32px',
+               // }}
+               >
+                  <Text style={{ fontSize: 32 }}>Total</Text>
+                  <Text style={{ fontSize: 32 }}>
+                     {currencyFormatter(
+                        saleItems
+                           .reduce(
+                              (acc, curr) => acc + curr.price * curr.quantity,
+                              0,
+                           )
+                           .toFixed(0),
+                     )}
+                  </Text>
                </Group>
             </div>
          </div>

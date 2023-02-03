@@ -39,49 +39,47 @@ interface NewStockEntryState {
 }
 
 const useNewStockEntry = create<NewStockEntryState>()(
-   devtools(
-      (set) => ({
-         items: [],
-         addItem: (item) =>
-            set((prev) => {
-               //check if item already exists, if exists, update quantity if cost is same
-               const existingItem = prev.items.find(
-                  (i) => i.productId === item.productId,
-               );
+   devtools((set) => ({
+      items: [],
+      addItem: (item) =>
+         set((prev) => {
+            //check if item already exists, if exists, update quantity if cost is same
+            const existingItem = prev.items.find(
+               (i) => i.productId === item.productId,
+            );
 
-               if (existingItem && existingItem.cost === item.cost) {
-                  // create new array with updated quantity
-                  const newItems = prev.items.map((i) => {
-                     if (i.productId === item.productId) {
-                        return {
-                           ...i,
-                           quantity: i.quantity + (item.quantity ?? 0),
-                        };
-                     }
-                     return i;
-                  });
+            if (existingItem && existingItem.cost === item.cost) {
+               // create new array with updated quantity
+               const newItems = prev.items.map((i) => {
+                  if (i.productId === item.productId) {
+                     return {
+                        ...i,
+                        quantity: i.quantity + (item.quantity ?? 0),
+                     };
+                  }
+                  return i;
+               });
 
-                  return { ...prev, items: newItems };
-               }
-               return {
-                  ...prev,
-                  items: [
-                     ...prev.items,
-                     {
-                        ...item,
-                        quantity: item.quantity ?? 1,
-                        cost: item.cost ?? 0,
-                     },
-                  ],
-               };
-            }),
-         removeItem: (index) =>
-            set((state) => ({
-               items: state.items.filter((_, i) => i !== index),
-            })),
-         clearItems: () => set({ items: [] }),
-      }),
-   ),
+               return { ...prev, items: newItems };
+            }
+            return {
+               ...prev,
+               items: [
+                  ...prev.items,
+                  {
+                     ...item,
+                     quantity: item.quantity ?? 1,
+                     cost: item.cost ?? 0,
+                  },
+               ],
+            };
+         }),
+      removeItem: (index) =>
+         set((state) => ({
+            items: state.items.filter((_, i) => i !== index),
+         })),
+      clearItems: () => set({ items: [] }),
+   })),
 );
 
 const StockEntryForm = () => {

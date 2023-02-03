@@ -1,4 +1,6 @@
+import { writeFileSync } from 'fs';
 import { z } from 'zod';
+import { formatString, lineSeparator } from '~/utils/ticket';
 import { paginationSchema, parsePagination } from '~/validators/common';
 import { prisma } from '../prisma';
 import { t } from '../trpc';
@@ -32,7 +34,11 @@ export const salesRouter = t.router({
          }),
       )
       .mutation(async ({ input }) => {
-         return prisma.$transaction(async (prisma) => {
+         console.log('creating sale');
+
+         // log on trpc output server
+         console.log(input);
+         const result = await prisma.$transaction(async (prisma) => {
             // calculate liq iva and total
             let total = 0;
             const totalesIva: Record<IvaEnum, number> = {
@@ -66,19 +72,19 @@ export const salesRouter = t.router({
                },
             });
 
+            //check entity credit limit
+            const entity = await prisma.entity.findFirst({
+               where: {
+                  id: input.entityId,
+               },
+            });
+
             if (input.type === 'CREDIT') {
                if (!input.entityId) {
                   throw new Error(
                      'No se puede crear una venta a credito sin cliente',
                   );
                }
-
-               //check entity credit limit
-               const entity = await prisma.entity.findUnique({
-                  where: {
-                     id: input.entityId,
-                  },
-               });
 
                if (!entity) {
                   throw new Error('Entity not found');
@@ -158,8 +164,59 @@ export const salesRouter = t.router({
                },
             });
 
+            let ticket = 'Mercado Dos Hermanos\n';
+            ticket += `Fecha: ${new Date().toLocaleString()}\n`;
+            ticket += `Venta: ${sale.id}\n`;
+            ticket += lineSeparator();
+            ticket += `Nombre del Producto\n`;
+            ticket += formatString('CantidadxPrecio', 'Total');
+            ticket += lineSeparator();
+
+            input.items.forEach((item) => {
+               let description = item.description;
+               if (description.length > 33) {
+                  description = description.substring(0, 30) + '...';
+               }
+               ticket += `${description}\n`;
+
+               const quantity = `${item.quantity}x${item.price.toFixed(0)}`;
+               const total = (item.quantity * item.price).toFixed(0);
+               ticket += formatString(quantity, total);
+            });
+
+            ticket += lineSeparator();
+            ticket += formatString(
+               'Total',
+               input.items
+                  .reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
+                  .toFixed(0),
+            );
+
+            ticket += lineSeparator();
+            // client info
+            if (input.entityId) {
+               ticket += `Cliente: ${entity?.name}\n`;
+            } else {
+               ticket += `Cliente: Cliente Ocasional\n`;
+            }
+
+            // if credit leave space for signature
+            if (input.type === 'CREDIT') {
+               ticket += '\n';
+               ticket += '\n';
+               ticket += 'Firma: \n';
+            }
+
+            ticket += lineSeparator();
+
+            console.log(ticket);
+
+            writeFileSync('ticket.txt', ticket);
+
             return sale;
          });
+
+         return result;
       }),
 
    list: t.procedure

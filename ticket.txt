@@ -1,0 +1,14 @@
+Mercado Dos Hermanos
+Fecha: 2/2/2023, 10:37:16 PM
+Venta: 12
+=================================
+Nombre del Producto
+CantidadxPrecio             Total
+=================================
+teste
+1x5000                       5000
+=================================
+Total                        5000
+=================================
+Cliente: Cliente Ocasional
+=================================
