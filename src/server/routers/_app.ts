@@ -2,6 +2,7 @@
  * This file contains the root router of your tRPC-backend
  */
 import { t } from '../trpc';
+import { dailySummaryRouter } from './dailySummary';
 import { entityRouter } from './entities';
 import { healthRouter } from './health';
 import { logRouter } from './logs';
@@ -20,6 +21,7 @@ export const appRouter = t.router({
    stockEntries: stockEntriesRouter,
    sales: salesRouter,
    payments: paymentsRouter,
+   dailySummary: dailySummaryRouter,
 });
 
 export type AppRouter = typeof appRouter;

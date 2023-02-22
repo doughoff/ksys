@@ -23,7 +23,12 @@ export const Description = ({
    children,
 }: DescriptionItemProps) => {
    return (
-      <Grid.Col span={span}>
+      <Grid.Col
+         span={span}
+         style={{
+            border: '1px solid #eaeaea',
+         }}
+      >
          <Stack spacing={'xs'}>
             <Text size={'sm'} weight={'bold'} align={align}>
                {label}

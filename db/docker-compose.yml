@@ -1,0 +1,9 @@
+version: '0.1'
+services:
+   db:
+      image: postgres
+      restart: always
+      ports:
+         - '5932:5432'
+      environment:
+         POSTGRES_PASSWORD: easypass
