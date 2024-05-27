@@ -8,9 +8,9 @@ export function formatString(start: string, end: string): string {
    } else {
       result += ' '.repeat(spaces);
    }
-   return result + '\n';
+   return result ;
 }
 
 export function lineSeparator(character = '='): string {
-   return character.repeat(LINE_SIZE) + '\n';
+   return character.repeat(LINE_SIZE) ;
 }

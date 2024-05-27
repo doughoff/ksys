@@ -394,6 +394,9 @@ const FinishSaleModal: React.FC = () => {
          onClose={() => {
             setIsOpen(false);
          }}
+         style={{
+            paddingTop: '8px'
+         }}
       >
          <form
             onSubmit={(e) => {
@@ -468,6 +471,7 @@ const FinishSaleModal: React.FC = () => {
                   disabled
                />
 
+               <Group>
                <Radio.Group
                   name="saleType"
                   label="Tipo de Venta"
@@ -479,7 +483,9 @@ const FinishSaleModal: React.FC = () => {
                   <Radio label="Efectivo" value={SaleType.CASH} />
                   <Radio label="Crédito" value={SaleType.CREDIT} />
                </Radio.Group>
-               <Text>Total: {currencyFormatter(saleTotal)}</Text>
+               <Text align='right'>Total: {currencyFormatter(saleTotal)}</Text>
+               </Group>
+               
 
                {/* when not credit, payment on cash show input for payment ammount and change */}
 

@@ -1,9 +1,12 @@
 import { writeFileSync } from 'fs';
 import { z } from 'zod';
 import { formatString, lineSeparator } from '~/utils/ticket';
+import { device, printer } from '~/utils/escposConnection';
 import { paginationSchema, parsePagination } from '~/validators/common';
 import { prisma } from '../prisma';
 import { t } from '../trpc';
+
+
 
 export enum IvaEnum {
    IVA_0 = 'IVA_0',
@@ -34,11 +37,7 @@ export const salesRouter = t.router({
          }),
       )
       .mutation(async ({ input }) => {
-         console.log('creating sale');
-
-         // log on trpc output server
-         console.log(input);
-         const result = await prisma.$transaction(async (prisma) => {
+         const sale = await prisma.$transaction(async (prisma) => {
             // calculate liq iva and total
             let total = 0;
             const totalesIva: Record<IvaEnum, number> = {
@@ -164,59 +163,72 @@ export const salesRouter = t.router({
                },
             });
 
-            let ticket = 'Mercado Dos Hermanos\n';
-            ticket += `Fecha: ${new Date().toLocaleString()}\n`;
-            ticket += `Venta: ${sale.id}\n`;
-            ticket += lineSeparator();
-            ticket += `Nombre del Producto\n`;
-            ticket += formatString('CantidadxPrecio', 'Total');
-            ticket += lineSeparator();
-
-            input.items.forEach((item) => {
-               let description = item.description;
-               if (description.length > 33) {
-                  description = description.substring(0, 30) + '...';
+            if(device) {
+               try {
+                  device?.open((err) => {
+                     if(!printer) return;
+                     let printerOpen = printer
+                     .font('A')
+                     .align('CT')
+                     .style('NORMAL')
+                     .size(1,1)
+                    
+                     
+                     printerOpen = printerOpen.text('Mercado dos Hermanos')
+                     printerOpen = printerOpen.align('LT')
+                     printerOpen = printerOpen.text(`Fecha: ${new Date().toLocaleString()}`)
+                     printerOpen = printerOpen.text(`Venta: ${sale.id}`)
+                     printerOpen = printerOpen.text(lineSeparator())
+                     printerOpen = printerOpen.text(`Nombre del Producto`)
+                     printerOpen = printerOpen.text(formatString('CantidadxPrecio', 'Total'))
+                     printerOpen = printerOpen.text(lineSeparator())
+         
+                     input.items.forEach((item) => {
+                        let description = item.description;
+                        if (description.length > 33) {
+                           description = description.substring(0, 30) + '...';
+                        }
+                        printerOpen = printerOpen.text( `${description}`)
+         
+                        const quantity = `${item.quantity}x${item.price.toFixed(0)}`;
+                        const total = (item.quantity * item.price).toFixed(0);
+                        printerOpen = printerOpen.text( formatString(quantity, total))
+                     });
+         
+                     printerOpen = printerOpen.text( lineSeparator())
+                     printerOpen = printerOpen.text( formatString(
+                        'Total',
+                        input.items
+                           .reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
+                           .toFixed(0),
+                     ))
+                     printerOpen = printerOpen.text(lineSeparator())
+                     // client info
+                     if (input.entityId) {
+                        printerOpen = printerOpen.text(`Cliente: ${entity?.name}`)
+                     } else {
+                        printerOpen = printerOpen.text(`Cliente: Cliente Ocasional`)
+                     }
+         
+                     // if credit leave space for signature
+                     if (input.type === 'CREDIT') {
+                        printerOpen = printerOpen.newLine().newLine();
+                        printerOpen = printerOpen.text('Firma:')
+                     }
+         
+                     printerOpen = printerOpen.text(lineSeparator());
+                     printerOpen = printerOpen.newLine().newLine().newLine().newLine().newLine();
+         
+                     
+                     printerOpen.cut().close()
+                  })
+               } catch (error) {
+                  console.log('erro')
                }
-               ticket += `${description}\n`;
-
-               const quantity = `${item.quantity}x${item.price.toFixed(0)}`;
-               const total = (item.quantity * item.price).toFixed(0);
-               ticket += formatString(quantity, total);
-            });
-
-            ticket += lineSeparator();
-            ticket += formatString(
-               'Total',
-               input.items
-                  .reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
-                  .toFixed(0),
-            );
-
-            ticket += lineSeparator();
-            // client info
-            if (input.entityId) {
-               ticket += `Cliente: ${entity?.name}\n`;
-            } else {
-               ticket += `Cliente: Cliente Ocasional\n`;
-            }
-
-            // if credit leave space for signature
-            if (input.type === 'CREDIT') {
-               ticket += '\n';
-               ticket += '\n';
-               ticket += 'Firma: \n';
-            }
-
-            ticket += lineSeparator();
-
-            console.log(ticket);
-
-            writeFileSync('ticket.txt', ticket);
-
+            }           
             return sale;
          });
-
-         return result;
+         return sale;
       }),
 
    list: t.procedure
