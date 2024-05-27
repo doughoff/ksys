@@ -189,6 +189,9 @@ model Credit {
    deletedAt DateTime?  @map("deleted_at")
    Interest  Interest[]
    Payment   Payment[]
+
+   LastInterestUpdate DateTime? @map("last_interest_update")
+   InterestAdded Int @map("interest_added") @default(0)
 }
 
 model Interest {

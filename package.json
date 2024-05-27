@@ -1,6 +1,6 @@
 {
 	"name": "ksys",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"private": true,
 	"scripts": {
 		"build:1-migrate": "prisma migrate deploy",
@@ -30,13 +30,13 @@
 	"dependencies": {
 		"@emotion/react": "^11.10.4",
 		"@emotion/server": "^11.10.0",
-		"@mantine/core": "^5.6.2",
-		"@mantine/dates": "^5.10.4",
-		"@mantine/form": "^5.6.2",
-		"@mantine/hooks": "^5.6.2",
-		"@mantine/modals": "^5.6.2",
-		"@mantine/next": "^5.6.2",
-		"@mantine/notifications": "^5.6.2",
+		"@mantine/core": "5.10.4",
+		"@mantine/dates": "5.10.4",
+		"@mantine/form": "5.10.4",
+		"@mantine/hooks": "5.10.4",
+		"@mantine/modals": "5.10.4",
+		"@mantine/next": "5.10.4",
+		"@mantine/notifications": "5.10.4",
 		"@prisma/client": "^4.7.1",
 		"@tabler/icons": "^1.107.0",
 		"@tanstack/react-query": "^4.3.8",

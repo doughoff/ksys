@@ -1,5 +1,17 @@
 {
    "typescript.tsdk": "node_modules/typescript/lib",
    "editor.tabSize": 3,
-   "editor.detectIndentation": false
+   "editor.detectIndentation": false,
+   "sqltools.connections": [
+      {
+         "previewLimit": 50,
+         "server": "localhost",
+         "port": 5432,
+         "driver": "PostgreSQL",
+         "name": "ksys",
+         "database": "ksys",
+         "username": "postgres",
+         "password": "794884"
+      }
+   ]
 }
