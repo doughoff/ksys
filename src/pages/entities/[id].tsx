@@ -36,7 +36,11 @@ import { NextLink } from '@mantine/next';
 
 const EntityDetailPage: NextPageWithLayout = () => {
    const id = useRouter().query.id as string;
-   const { data: entity, error } = trpc.entity.byId.useQuery({
+   const {
+      data: entity,
+      error,
+      refetch: refetchEntity,
+   } = trpc.entity.byId.useQuery({
       id: parseInt(id),
    });
    const [showEditForm, setShowEditForm] = React.useState(false);
@@ -51,6 +55,25 @@ const EntityDetailPage: NextPageWithLayout = () => {
             await trpcUtils.entity.byId.invalidate({ id: entity?.id ?? 0 });
          },
       });
+
+   const { mutateAsync: calculate } =
+      trpc.sales.calculate_interest.useMutation();
+
+   React.useEffect(() => {
+      const today = dayjs().startOf('day'); // Get today's date at the start of the day
+      const lastCalculationDate = dayjs(
+         window.localStorage.getItem('lastCalculation'),
+      );
+
+      if (
+         !lastCalculationDate.isValid() ||
+         !today.isSame(lastCalculationDate, 'day')
+      ) {
+         calculate();
+         window.localStorage.setItem('lastCalculation', today.toString());
+         refetchEntity();
+      }
+   }, [calculate]); // eslint-disable-line react-hooks/exhaustive-deps
 
    if (error) return <div>failed to load</div>;
    if (!entity) return <div>loading...</div>;

@@ -163,74 +163,112 @@ export const salesRouter = t.router({
                },
             });
 
-            if(device) {
+            if (device) {
                try {
                   device?.open((err) => {
-                     if(!printer) return;
+                     if (!printer) return;
                      let printerOpen = printer
-                     .font('A')
-                     .align('CT')
-                     .style('NORMAL')
-                     .size(1,1)
-                    
-                     
-                     printerOpen = printerOpen.text('Mercado dos Hermanos')
-                     printerOpen = printerOpen.align('LT')
-                     printerOpen = printerOpen.text(`Fecha: ${new Date().toLocaleString()}`)
-                     printerOpen = printerOpen.text(`Venta: ${sale.id}`)
-                     printerOpen = printerOpen.text(lineSeparator())
-                     printerOpen = printerOpen.text(`Nombre del Producto`)
-                     printerOpen = printerOpen.text(formatString('CantidadxPrecio', 'Total'))
-                     printerOpen = printerOpen.text(lineSeparator())
-         
+                        .font('A')
+                        .align('CT')
+                        .style('NORMAL')
+                        .size(1, 1);
+
+                     printerOpen = printerOpen.text('Mercado dos Hermanos');
+                     printerOpen = printerOpen.align('LT');
+                     printerOpen = printerOpen.text(
+                        `Fecha: ${new Date().toLocaleString()}`,
+                     );
+                     printerOpen = printerOpen.text(`Venta: ${sale.id}`);
+                     printerOpen = printerOpen.text(lineSeparator());
+                     printerOpen = printerOpen.text(`Nombre del Producto`);
+                     printerOpen = printerOpen.text(
+                        formatString('CantidadxPrecio', 'Total'),
+                     );
+                     printerOpen = printerOpen.text(lineSeparator());
+
                      input.items.forEach((item) => {
                         let description = item.description;
                         if (description.length > 33) {
                            description = description.substring(0, 30) + '...';
                         }
-                        printerOpen = printerOpen.text( `${description}`)
-         
-                        const quantity = `${item.quantity}x${item.price.toFixed(0)}`;
+                        printerOpen = printerOpen.text(`${description}`);
+
+                        const quantity = `${item.quantity}x${item.price.toFixed(
+                           0,
+                        )}`;
                         const total = (item.quantity * item.price).toFixed(0);
-                        printerOpen = printerOpen.text( formatString(quantity, total))
+                        printerOpen = printerOpen.text(
+                           formatString(quantity, total),
+                        );
                      });
-         
-                     printerOpen = printerOpen.text( lineSeparator())
-                     printerOpen = printerOpen.text( formatString(
-                        'Total',
-                        input.items
-                           .reduce((acc, curr) => acc + curr.price * curr.quantity, 0)
-                           .toFixed(0),
-                     ))
-                     printerOpen = printerOpen.text(lineSeparator())
+
+                     printerOpen = printerOpen.text(lineSeparator());
+                     printerOpen = printerOpen.text(
+                        formatString(
+                           'Total',
+                           input.items
+                              .reduce(
+                                 (acc, curr) =>
+                                    acc + curr.price * curr.quantity,
+                                 0,
+                              )
+                              .toFixed(0),
+                        ),
+                     );
+                     printerOpen = printerOpen.text(lineSeparator());
                      // client info
                      if (input.entityId) {
-                        printerOpen = printerOpen.text(`Cliente: ${entity?.name}`)
+                        printerOpen = printerOpen.text(
+                           `Cliente: ${entity?.name}`,
+                        );
                      } else {
-                        printerOpen = printerOpen.text(`Cliente: Cliente Ocasional`)
+                        printerOpen = printerOpen.text(
+                           `Cliente: Cliente Ocasional`,
+                        );
                      }
-         
+
                      // if credit leave space for signature
                      if (input.type === 'CREDIT') {
                         printerOpen = printerOpen.newLine().newLine();
-                        printerOpen = printerOpen.text('Firma:')
+                        printerOpen = printerOpen.text('Firma:');
                      }
-         
+
                      printerOpen = printerOpen.text(lineSeparator());
-                     printerOpen = printerOpen.newLine().newLine().newLine().newLine().newLine();
-         
-                     
-                     printerOpen.cut().close()
-                  })
+                     printerOpen = printerOpen
+                        .newLine()
+                        .newLine()
+                        .newLine()
+                        .newLine()
+                        .newLine();
+
+                     printerOpen.cut().close();
+                  });
                } catch (error) {
-                  console.log('erro')
+                  console.log('erro');
                }
-            }           
+            }
             return sale;
          });
          return sale;
       }),
 
+   calculate_interest: t.procedure
+      .mutation(async () => {
+         return prisma.$queryRaw`
+            UPDATE "Credit"
+            SET
+               last_interest_update = NOW(),
+               payment_left = payment_left * POWER(1.05, LEAST(EXTRACT(MONTH FROM AGE(NOW(), COALESCE(last_interest_update, created_at)))::int, 1)),
+               interest_added = interest_added + payment_left * (POWER(1.05, LEAST(EXTRACT(MONTH FROM AGE(NOW(), COALESCE(last_interest_update, created_at)))::int, 1)) - 1)
+            WHERE
+               id IN (
+                  SELECT id
+                  FROM "Credit"
+                  WHERE COALESCE(last_interest_update, created_at) < NOW() - INTERVAL '1 month'
+                     AND payment_left > 0
+               );
+         `;
+      }),
    list: t.procedure
       .input(
          z.object({
